@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('cost');
             $table->string('img_path');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -16,13 +16,37 @@ class ProductController extends Controller
         return view('product.create');
     }
 
+    // public function store(Request $request)
+    // {
+    //     $request->validate([
+    //         'name' => 'required|string',
+    //         'type' => 'required|string',
+    //         'cost' => 'required|numeric',
+    //         'img_path' => 'required|image|mimes:jpg,bmp,png|max:2048',
+    //     ]);
+
+    //     $product = new Product();
+    //     $product->name = $request->name;
+    //     $product->type = $request->type;
+    //     $product->cost = $request->cost;
+
+    //     if ($request->hasFile('img_path')) {
+    //         $path = $request->file('img_path')->store('public/images');
+    //         $product->img_path = str_replace('public/', 'storage/', $path);
+    //     }
+
+    //     $product->save();
+    //     return redirect()->route('product.index')->with('success', 'Product created successfully.');
+    // }
+
+    
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string',
             'type' => 'required|string',
             'cost' => 'required|numeric',
-            'img_path' => 'required|image|mimes:jpg,bmp,png|max:2048',
+            'img_path.*' => 'required|image|mimes:jpg,bmp,png|max:2048',
         ]);
 
         $product = new Product();
@@ -30,19 +54,24 @@ class ProductController extends Controller
         $product->type = $request->type;
         $product->cost = $request->cost;
 
+        $img_paths = [];
         if ($request->hasFile('img_path')) {
-            $path = $request->file('img_path')->store('public/images');
-            $product->img_path = str_replace('public/', 'storage/', $path);
+            foreach ($request->file('img_path') as $image) {
+                $path = $image->store('public/images');
+                $img_paths[] = str_replace('public/', 'storage/', $path);
+            }
         }
 
+        $product->img_path = implode(',', $img_paths);
         $product->save();
+
         return redirect()->route('product.index')->with('success', 'Product created successfully.');
     }
 
     //Read
     public function index()
     {
-        $products = Product::all();
+        $products = Product::withTrashed()->get();
         return view('product.index', compact('products'));
     }
 
@@ -81,7 +110,17 @@ class ProductController extends Controller
     //Delete
     public function delete($id)
     {
-        Product::destroy($id);
-        return Redirect::to('product');
+        $product = Product::findOrFail($id);
+        $product->delete();
+        return redirect()->route('product.index')->with('success', 'Product deleted successfully.');
     }
+
+    //Restore
+    public function restore($id)
+    {
+        $product = Product::withTrashed()->where('id', $id)->first();
+        $product->restore();
+        return redirect()->route('product.index')->with('success', 'Product restored successfully.');
+    }
+
 }
