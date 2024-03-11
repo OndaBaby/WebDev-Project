@@ -10,6 +10,14 @@ use Redirect;
 
 class ProductController extends Controller
 {
+
+    //Read
+    public function index()
+    {
+         $products = Product::withTrashed()->get();
+        return view('product.index');
+    }
+
     //Create
     public function create()
     {
@@ -39,7 +47,7 @@ class ProductController extends Controller
     //     return redirect()->route('product.index')->with('success', 'Product created successfully.');
     // }
 
-    
+
     public function store(Request $request)
     {
         $request->validate([
@@ -66,13 +74,6 @@ class ProductController extends Controller
         $product->save();
 
         return redirect()->route('product.index')->with('success', 'Product created successfully.');
-    }
-
-    //Read
-    public function index()
-    {
-        $products = Product::withTrashed()->get();
-        return view('product.index', compact('products'));
     }
 
     //Edit
