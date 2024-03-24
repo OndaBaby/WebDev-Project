@@ -29,9 +29,8 @@
 </div>
 @endsection --}}
 
-@extends('layouts.app')
-
-@section('body')
+@extends('layouts.base')
+@section('content')
 <div class="container mt-4">
     <h1>Create Products</h1>
     <div class="container">
@@ -50,6 +49,11 @@
             <div class="form-group">
                 <label for="cost">Cost: </label>
                 <input type="text" class="form-control" name="cost" required>
+            </div>
+            <div class="form-group">
+                <label for="stock">Stock Quantity: </label>
+                <p>How many stock will be added on the inventory</p>
+                <input type="number" class="form-control" name="stock" required>
             </div>
             <div class="form-group">
                 <label for="img_path">Product Images: </label>

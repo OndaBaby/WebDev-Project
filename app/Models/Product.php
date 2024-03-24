@@ -17,4 +17,21 @@ class Product extends Model
     {
         return explode(',', $value);
     }
+
+    public function stocks()
+    {
+        return $this->hasMany(Inventory::class);
+    }
+
+    public function feedbackP() {
+        return $this->hasMany(Feedback::class);
+    }
+
+    public function orders() {
+        return $this->belongsToMany(Order::class);
+    }
+
+    public function carts() {
+        return $this->hasMany(Cart::class);
+    }
 }

@@ -1,8 +1,7 @@
-@extends('layouts.app')
-
-@section('body')
+@extends('layouts.base')
+@section('content')
     <div class="container">
-        <h1>Edit Form, gumamit nako laravelcollective/html dito, composer require laravelcollective/html</h1>
+        <h1>Edit Form</h1>
         <div class="card">
             <div class="card-body">
                 {!! Form::model($product, ['route' => ['product.update', $product->id], 'class' => 'form', 'files' => true, 'method' => 'post']) !!}
@@ -28,12 +27,14 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        {{ Form::label('img_path', 'Upload Image') }}
-                        {!! Form::file('img_path', ['class' => 'form-control-file']) !!}
+                        {{ Form::label('img_path[]', 'Upload Images') }}
+                        {!! Form::file('img_path[]', ['class' => 'form-control-file', 'multiple' => true]) !!}
                         @error('img_path')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
-                        <img src="{{ url($product->img_path) }}" alt="product image" width="50" height="50">
+                        @foreach($product->images as $image)
+                            <img src="{{ url($image->path) }}" alt="product image" width="50" height="50">
+                        @endforeach
                     </div>
                     <div class="form-group">
                         {!! Form::submit('Submit', ['class' => 'btn btn-primary']) !!}
