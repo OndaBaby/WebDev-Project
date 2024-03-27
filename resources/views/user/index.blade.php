@@ -53,7 +53,8 @@
                 {{ session('success') }}
             </div>
         @endif
-        <a class="btn btn-primary mb-3" href="{{ route('cart.index') }}">My Cart</a>
+        <a class="btn btn-primary mb-3" href="{{ route('cart.index') }}"></a>
+         <i class="fas fa-shopping-cart" aria-hidden="true"></i> My Cart <span class="badge bg-danger"> {{ count((array) session('cart')) }}</span>
         <div class="row">
             @foreach ($products as $product)
                 <div class="col-md-4 mb-4">
@@ -73,7 +74,7 @@
                                 <a class="carousel-control prev" href="#carousel{{ $product->id }}" role="button" data-slide="prev">&#10094;</a>
                                 <a class="carousel-control next" href="#carousel{{ $product->id }}" role="button" data-slide="next">&#10095;</a>
                             </div>
-                            <a href="{{ route('addToCart', ['product_id' => $product->id]) }}" class="btn btn-primary mt-3">Add to Cart</a>
+                            <a href="{{ route('addToCart') }}?product_id={{ $product->id }}" class="btn btn-primary mt-3">Add to Cart</a>
                         </div>
                     </div>
                 </div>

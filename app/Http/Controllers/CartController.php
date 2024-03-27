@@ -52,40 +52,27 @@ class CartController extends Controller
 
     public function addToCart(Request $request)
     {
-        $productId = $request->query('product_id'); // Retrieve product ID from query parameters
+        $productId = $request->query('product_id');
 
-        // Fetch the product based on the product ID
         $product = Product::findOrFail($productId);
 
         $user = auth()->user();
         $customer = $user->customer;
 
         if (!$customer) {
-            // If the user doesn't have a customer entry, redirect them to fill out the form
             return redirect()->route('customer.create');
         }
 
-        // User has a corresponding entry in the customer table
         $customer_id = $customer->id;
 
+        // Fetch the existing cart item for the current customer and product
         $existingCartItem = Cart::where('customer_id', $customer_id)
                                 ->where('product_id', $product->id)
                                 ->first();
 
         if ($existingCartItem) {
-            // Check if $existingCartItem is an array (if query failed to retrieve a cart item)
-            if (is_array($existingCartItem)) {
-                // If $existingCartItem is an array, create a new Cart model instance
-                $existingCartItem = new Cart();
-                $existingCartItem->customer_id = $customer_id;
-                $existingCartItem->product_id = $product->id;
-                $existingCartItem->cart_qty = 1;
-            } else {
-                // Increment the cart_qty if the cart item already exists
-                $existingCartItem->cart_qty++;
-            }
-            // Save the updated cart item
-            $existingCartItem->save();
+            // If the cart item already exists, increment the cart_qty
+            $existingCartItem->increment('cart_qty'); // Increment cart_qty by 1
         } else {
             // If the cart item does not exist, create a new one
             $cartItem = new Cart();
@@ -94,6 +81,6 @@ class CartController extends Controller
             $cartItem->cart_qty = 1;
             $cartItem->save();
         }
-        return redirect()->route('cart');
+        return redirect()->route('dashboard');
     }
 }

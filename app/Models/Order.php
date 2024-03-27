@@ -13,7 +13,7 @@ class Order extends Model
     protected $fillable = ['customer_id', 'shipping_fee', 'status', 'date_placed', 'date_shipped'];
 
     public function customerOrder() {
-        return $this->belongsTo(Customer::class)
+        return $this->belongsTo(Customer::class);
     }
 
     public function products() {

@@ -23,12 +23,6 @@ class ProductController extends Controller
         return view('product.index', compact('products'));
     }
 
-    public function index1()
-    {
-        $products = Product::withTrashed()->get();
-        return view('welcome', compact('products'));
-    }
-
     public function create()
     {
         return view('product.create');
@@ -85,15 +79,14 @@ class ProductController extends Controller
         $product->cost = $request->cost;
 
         if ($request->hasFile('img_path')) {
-            $images = [];
+            $newImagePaths = [];
             foreach ($request->file('img_path') as $file) {
                 $path = $file->store('public/images');
-                $images[] = [
-                    'path' => str_replace('public/', 'storage/', $path)
-                ];
+                $newImagePaths[] = str_replace('public/', 'storage/', $path);
             }
-            $product->images()->createMany($images);
+            $product->img_path = implode(',', $newImagePaths);
         }
+
         $product->save();
 
         return redirect()->route('product.index')->with('success', 'Product updated successfully.');

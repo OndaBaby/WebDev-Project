@@ -22,7 +22,7 @@
                     <div class="form-group">
                         {{ Form::label('description', 'Description') }}
                         {{ Form::text('description', null, ['class' => 'form-control', 'placeholder' => 'Enter product description']) }}
-                        @error('type')
+                        @error('description')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
@@ -39,9 +39,15 @@
                         @error('img_path')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
-                        @foreach($product->images as $image)
-                            <img src="{{ url($image->path) }}" alt="product image" width="50" height="50">
-                        @endforeach
+
+                        @if(!empty($product->img_path))
+                            @php
+                                $imagePaths = explode(',', $product->img_path);
+                            @endphp
+                            @foreach($imagePaths as $image)
+                                <img src="{{ url($image) }}" alt="product image" width="50" height="50">
+                            @endforeach
+                        @endif
                     </div>
                     <div class="form-group">
                         {!! Form::submit('Submit', ['class' => 'btn btn-primary']) !!}

@@ -42,10 +42,6 @@ Route::post('/customer/store', [CustomerController::class, 'store'])->name('cust
 
 Route::get('/add-to-cart', [CartController::class, 'addToCart'])->name('addToCart');
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::put('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
-Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
-
-
 
 Route::get('/dashboard', [UserController::class, 'index'])->name('dashboard');
 
