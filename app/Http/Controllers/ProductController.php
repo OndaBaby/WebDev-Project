@@ -23,6 +23,12 @@ class ProductController extends Controller
         return view('product.index', compact('products'));
     }
 
+    public function index1()
+    {
+        $products = Product::withTrashed()->get();
+        return view('welcome', compact('products'));
+    }
+
     public function create()
     {
         return view('product.create');
@@ -33,6 +39,7 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required|string',
             'type' => 'required|string',
+            'description' => 'required|string',
             'cost' => 'required|numeric',
             'stock' => 'required|integer|min:0',
             'img_path.*' => 'required|image|mimes:jpg,bmp,png|max:2048',
@@ -41,6 +48,7 @@ class ProductController extends Controller
         $product = new Product();
         $product->name = $request->name;
         $product->type = $request->type;
+        $product->description = $request->description;
         $product->cost = $request->cost;
 
         $img_paths = [];
@@ -73,6 +81,7 @@ class ProductController extends Controller
 
         $product->name = $request->name;
         $product->type = $request->type;
+        $product->description = $request->description;
         $product->cost = $request->cost;
 
         if ($request->hasFile('img_path')) {

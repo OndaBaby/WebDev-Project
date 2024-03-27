@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('type');
+            $table->string('description');
             $table->string('cost');
             $table->string('img_path');
             $table->timestamps();

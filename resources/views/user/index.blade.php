@@ -1,5 +1,5 @@
-@extends('layouts.base')
-@section('content')
+@extends('layouts.master')
+@section('body')
     <style>
         .product-image {
             width: 120px;
@@ -34,7 +34,7 @@
             background: rgba(0, 0, 0, 0.5);
             color: white;
             text-align: center;
-            line-height: 120px; 
+            line-height: 120px;
             cursor: pointer;
         }
 
@@ -53,7 +53,7 @@
                 {{ session('success') }}
             </div>
         @endif
-        <a class="btn btn-primary mb-3" href=#>My Cart</a>
+        <a class="btn btn-primary mb-3" href="{{ route('cart.index') }}">My Cart</a>
         <div class="row">
             @foreach ($products as $product)
                 <div class="col-md-4 mb-4">
@@ -73,7 +73,7 @@
                                 <a class="carousel-control prev" href="#carousel{{ $product->id }}" role="button" data-slide="prev">&#10094;</a>
                                 <a class="carousel-control next" href="#carousel{{ $product->id }}" role="button" data-slide="next">&#10095;</a>
                             </div>
-                            <a href="{{ route('add.to.cart', $product->id)}}" class="btn btn-primary mt-3">Add to Cart</a>
+                            <a href="{{ route('addToCart', ['product_id' => $product->id]) }}" class="btn btn-primary mt-3">Add to Cart</a>
                         </div>
                     </div>
                 </div>

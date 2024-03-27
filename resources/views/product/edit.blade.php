@@ -20,6 +20,13 @@
                         @enderror
                     </div>
                     <div class="form-group">
+                        {{ Form::label('description', 'Description') }}
+                        {{ Form::text('description', null, ['class' => 'form-control', 'placeholder' => 'Enter product description']) }}
+                        @error('type')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="form-group">
                         {{ Form::label('cost', 'Cost') }}
                         {{ Form::number('cost', null, ['class' => 'form-control', 'placeholder' => 'Enter product cost']) }}
                         @error('cost')

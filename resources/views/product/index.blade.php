@@ -217,6 +217,7 @@
             <tr>
                 <th scope="col">Name</th>
                 <th scope="col">Type</th>
+                <th scope="col">Description</th>
                 <th scope="col">Cost</th>
                 <th scope="col">Images</th>
                 <th scope="col">Actions</th>
@@ -227,6 +228,7 @@
                 <tr>
                     <td>{{ $product->name }}</td>
                     <td>{{ $product->type }}</td>
+                    <td>{{ $product->description }}</td>
                     <td>{{ $product->cost }}</td>
                     <td>
                         <div class="carousel" id="carousel{{ $product->id }}">

@@ -47,6 +47,10 @@
                 <input type="text" class="form-control" name="type" required>
             </div>
             <div class="form-group">
+                <label for="description">Product Description: </label>
+                <input type="text" class="form-control" name="description" required>
+            </div>
+            <div class="form-group">
                 <label for="cost">Cost: </label>
                 <input type="text" class="form-control" name="cost" required>
             </div>

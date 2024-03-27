@@ -10,6 +10,7 @@ class Inventory extends Model
     use HasFactory;
     protected $table = 'inventories';
     protected $fillable = ['stock'];
+    protected $primaryKey = 'product_id';
 
     public function product()
     {
