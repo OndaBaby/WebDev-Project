@@ -45,8 +45,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'password' => 'hashed',
     ];
 
-    public function imageTenant() {
-        return $this->hasMany(Image::class);
+    public function image() {
+        return $this->hasOne(Image::class);
     }
 
     public function customer() {

@@ -155,7 +155,7 @@
 @endsection --}}
 
 
-@extends('layouts.base')
+@extends('layouts.app')
 @section('content')
     <style>
         .product-image {

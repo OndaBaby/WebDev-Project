@@ -3,7 +3,8 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-
+use App\Models\Stock;
+use Faker\Generator as Faker;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
  */
@@ -17,7 +18,7 @@ class StockFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'stock' => $this->faker->numberBetween(0, 100),
         ];
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Customer;
+use App\Models\Product;
 
 class CustomerController extends Controller
 {
@@ -32,6 +33,29 @@ class CustomerController extends Controller
         $customer->save();
 
         // Redirect to the add to cart page after creating the customer
-        return redirect()->route('dashboard');
+        return redirect()->route('customer.index');
     }
+
+    // public function search(Request $request)
+    // {
+    //     $searchQuery = $request->input('search');
+
+    //     if (!$searchQuery) {
+    //         return redirect()->route('customer.index');
+    //     }
+    //     $searchResults = Product::where('name', 'like', '%' . $searchQuery . '%')
+    //         ->orWhere('cost', 'like', '%' . $searchQuery . '%')
+    //         ->orWhere('type', 'like', '%' . $searchQuery . '%')
+    //         ->latest('created_at')
+    //         ->get();
+
+    //     return view('customer.index', ['searchResults' => $searchResults, 'query' => $searchQuery]);
+    // }
+
+    public function index()
+    {
+        $products = Product::all();
+        return view('customer.index', compact('products'));
+    }
+
 }

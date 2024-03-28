@@ -15,7 +15,7 @@ class Image extends Model
         'user_image',
     ];
 
-    public function tenantImage() {
+    public function user() {
         return $this->belongsTo(User::class);
     }
 }

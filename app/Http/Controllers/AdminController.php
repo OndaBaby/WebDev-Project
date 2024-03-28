@@ -12,7 +12,6 @@ class AdminController extends Controller
 {
     public function generateInventoryChart()
     {
-        // Retrieve products with their total stock and sort by total_stock ascending
         $data = Product::join('inventories', 'products.id', '=', 'inventories.product_id')
                         ->select('products.name', DB::raw('SUM(inventories.stock) as total_stock'))
                         ->groupBy('products.name')
@@ -63,7 +62,6 @@ class AdminController extends Controller
                 ],
             ],
         ]);
-
         return view('admin.analytics', compact('salesChart'));
     }
 }

@@ -18,6 +18,6 @@ class Cart extends Model
     }
 
     public function productC() {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class, 'product_id');
     }
 }
