@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('usertype')->default('user');
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

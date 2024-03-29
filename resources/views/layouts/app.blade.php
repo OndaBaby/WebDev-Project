@@ -82,7 +82,7 @@
 </html> --}}
 
 
-<!doctype html>
+{{-- <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
@@ -108,7 +108,32 @@
 <body>
     <div id="app">
         <!-- Header -->
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+        <header class="navbar">
+            <a href="{{ url('/') }}" class="navbar-brand">
+                <img src="{{ asset('storage/images/LogoE.png') }}" alt="ElectroKits Logo">
+                ElectroKits
+            </a>
+            <div class="nav-links">
+                <a href="{{ route('about') }}" class="nav-link"><i class="fas fa-question"></i>About Us</a>
+                <a href="{{ route('contact') }}" class="nav-link"><i class="fas fa-phone"></i>Contact Us</a>
+                @guest <!-- Check if the user is a guest (not logged in) -->
+                    <a href="{{ route('login') }}" class="nav-link">Log in</a>
+                    <a href="{{ route('register') }}" class="nav-link">Register</a>
+                @else
+                    <span class="user-name">{{ Auth::user()->name }}</span> <!-- Display user's name -->
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="logout-button shopee-theme">Logout</button>
+                    </form>
+                @endguest
+                <a href="{{ auth()->check() ? route('cart') : route('login') }}" class="cart-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
+                    </svg>
+                </a>
+            </div>
+        </header>
+        {{-- <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container-fluid">
                 <!-- Brand -->
                 <a class="navbar-brand" href="{{ url('/') }}">
@@ -189,13 +214,140 @@
                     </ul>
                 </div>
             </div>
-        </nav>
+        </nav> --}}
         <!-- End Header -->
 
-        <main class="py-4">
+        {{-- <main class="py-4">
             @yield('content')
         </main>
     </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>  --}}
+
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <link rel="dns-prefetch" href="//fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js" charset="utf-8"></script>
+    <style>
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f05026; /* Shopee orange */
+        color: #ffffff; /* White */
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .navbar-brand {
+        color: #ffffff; /* White */
+        font-weight: bold;
+        font-size: 1.5rem;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+    }
+
+    .navbar-brand img {
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .nav-links {
+        display: flex;
+        align-items: center;
+    }
+
+    .nav-link {
+        color: #ffffff; /* White */
+        margin: 0 1rem;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .nav-link i {
+        margin-right: 5px;
+    }
+
+    .cart-icon {
+        margin-left: 1rem;
+        cursor: pointer;
+    }
+
+    .cart-icon svg {
+        height: 30px;
+        width: 30px;
+    }
+</style>
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+    </head>
+    <body>
+        <div id="app">
+            <!-- Header -->
+            <header class="navbar">
+                <a href="{{ Auth::check() ? (Auth::user()->usertype === 'admin' ? route('admin.home') : route('home')) : route('home') }}" class="navbar-brand">
+                    <img src="{{ asset('storage/images/LogoE.png') }}" alt="ElectroKits Logo">
+                    ElectroKits
+                </a>
+                <div class="nav-links">
+                    @guest
+                        <a href="{{ route('about') }}" class="nav-link"><i class="fas fa-question"></i>About Us</a>
+                        <a href="{{ route('contact') }}" class="nav-link"><i class="fas fa-phone"></i>Contact Us</a>
+                        <a href="{{ route('login') }}" class="nav-link">Log in</a>
+                        <a href="{{ route('register') }}" class="nav-link">Register</a>
+                    @else
+                        @if(Auth::user()->usertype == 'admin')
+                            <a href="{{ route('product.index') }}" class="nav-link">Customers</a>
+                            <a href="{{ route('product.index') }}" class="nav-link">Products</a>
+                            <a href="{{ route('order.index') }}" class="nav-link">Orders</a>
+                            <a href="{{ route('analytics') }}" class="nav-link">Analytics</a>
+                            <a href="{{ route('product.index') }}" class="nav-link">Feedbacks</a>
+                            <a href="{{ route('inventory') }}" class="nav-link">Inventory</a>
+                        @else
+                            <a href="{{ route('cart') }}" class="nav-link"><i class="fas fa-shopping-cart"></i>Cart</a>
+                            <a href="#" class="nav-link">Button 1</a>
+                            <a href="#" class="nav-link">Button 2</a>
+                        @endif
+                        <div class="dropdown">
+                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {{ Auth::user()->name }}
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                                    {{ __('View Profile') }}
+                                </a>
+                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    {{ __('Logout') }}
+                                </a>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    @csrf
+                                </form>
+                            </div>
+                        </div>
+                    @endguest
+                </div>
+            </header>
+            <!-- Main content -->
+            <main class="py-4">
+                @yield('content')
+            </main>
+        </div>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>

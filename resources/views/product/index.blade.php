@@ -234,13 +234,22 @@
                         <div class="carousel" id="carousel{{ $product->id }}">
                             <div class="carousel-inner">
                                 @foreach (explode(',', $product->img_path) as $key => $imgPath)
+                                    {{-- <div class="carousel-item {{ $key === 0 ? 'active' : '' }}">
+                                        <img src="{{ asset($imgPath) }}" alt="Product Image {{ $key + 1 }}" class="d-block w-100 product-image">
+                                    </div> --}}
                                     <div class="carousel-item {{ $key === 0 ? 'active' : '' }}">
                                         <img src="{{ asset($imgPath) }}" alt="Product Image {{ $key + 1 }}" class="d-block w-100 product-image">
                                     </div>
                                 @endforeach
                             </div>
-                            <a class="carousel-control prev" href="#carousel{{ $product->id }}" role="button" data-slide="prev">&#10094;</a>
-                            <a class="carousel-control next" href="#carousel{{ $product->id }}" role="button" data-slide="next">&#10095;</a>
+                            <a class="carousel-control-prev" href="#carousel{{ $product->id }}" role="button" data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="carousel-control-next" href="#carousel{{ $product->id }}" role="button" data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                            </a>
                         </div>
                     </td>
                     <td>

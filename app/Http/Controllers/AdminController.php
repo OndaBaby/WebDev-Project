@@ -64,4 +64,6 @@ class AdminController extends Controller
         ]);
         return view('admin.analytics', compact('salesChart'));
     }
+
+    
 }

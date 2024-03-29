@@ -12,6 +12,8 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ProfileController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -24,9 +26,15 @@ use App\Http\Controllers\CustomerController;
 |
 */
 
-// Route::get('/', function () {
-//   return view('welcome');
-// });
+Route::get('/', [UserController::class, 'welcome'])->name('welcome');
+
+Route::get('/about', function () {
+    return view('contact.about');
+})->name('about');
+
+Route::get('/contact', function () {
+    return view('contact.contact');
+})->name('contact');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
@@ -50,6 +58,8 @@ Route::middleware(['auth','is_admin'])->group(function () {
     // need for improvement
     Route::get('/adminhome', [HomeController::class, 'adminHome'])->name('admin.home');
 
+    Route::get('/order', [OrderController::class, 'index'])->name('order.index');
+    Route::post('/order/{id}/update', [OrderController::class, 'update'])->name('order.update');
     //Ok na to
     Route::get('/product', [ProductController::class, 'index'])->name('product.index');
     Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
@@ -65,7 +75,6 @@ Route::middleware(['auth','is_admin'])->group(function () {
     Route::post('/inventory/{productId}/update', [InventoryController::class, 'update'])->name('inventory.update');
 
     Route::get('/order/{id}/edit', [OrderController::class, 'edit'])->name('order.edit');
-    Route::post('/order/{id}/update', [OrderController::class, 'update'])->name('order.update');
 
     Route::get('/generate-analytics', [AdminController::class, 'generateInventoryChart'])->name('analytics');
     Route::get('/product/datatable', [ProductController::class, 'producttable'])->name('product.datatable'); //di pa maayos | saka na to
@@ -82,3 +91,6 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 
     return redirect('/home');
 })->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');

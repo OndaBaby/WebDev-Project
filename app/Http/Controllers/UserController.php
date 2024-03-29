@@ -8,8 +8,9 @@ use App\Models\Cart;
 
 class UserController extends Controller
 {
-    public function index()
+    public function welcome()
     {
-        
+        $products = Product::all();
+        return view('welcome', compact('products'));
     }
 }
