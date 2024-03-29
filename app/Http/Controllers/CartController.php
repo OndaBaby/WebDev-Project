@@ -220,34 +220,4 @@ class CartController extends Controller
     //     }
     //     return redirect()->route('getCart');
     // }
-
-
-    // public function addToCart(Request $request, $productId)
-    // {
-    //     // Get the authenticated user
-    //     $user = auth()->user();
-
-    //     // Check if the user has associated customer data
-    //     if (!$user->customer) {
-    //         return redirect()->route('customer.create');
-    //     }
-
-    //     $product = Product::find($productId);
-    //     $cart_qty = $request->input('cart_qty', 1);
-    //     $customerId = $user->customer->id;
-
-    //     if ($cart = DB::table('carts')->where('customer_id', $customerId)->where('product_id', $productId)->first()) {
-    //         DB::table('carts')->where('customer_id', $customerId)->where('product_id', $productId)->update([
-    //             'cart_qty' => $cart->cart_qty + $cart_qty,
-    //             'created_at' => now()
-    //         ]);
-    //     } else {
-    //         $cartId = DB::table('carts')->insertGetId([
-    //             'customer_id' => $customerId,
-    //             'product_id' => $productId,
-    //             'cart_qty' => $cart_qty,
-    //         ]);
-    //     }
-    //     return redirect()->route('cart.add', ['productId' => $productId]);
-    // }
 }
