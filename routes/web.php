@@ -45,8 +45,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/customer/create', [CustomerController::class, 'create'])->name('customer.create');
     Route::post('/customer/store', [CustomerController::class, 'store'])->name('customer.store');
-
-    Route::get('/add-to-cart', [CartController::class, 'addToCart'])->name('cart.add');
+    
+    Route::get('/add-to-cart/{product_id}', [CartController::class, 'addToCart'])->name('cart.add');
+    //Route::get('/add-to-cart', [CartController::class, 'addToCart'])->name('cart.add');
 
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::get('/mycart', [CartController::class, 'index'])->name('cart');

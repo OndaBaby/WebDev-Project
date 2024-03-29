@@ -16,7 +16,7 @@
                             @foreach ($products as $product)
                             <div class="col-md-3 mb-4"> <!-- Use col-md-3 to make each container occupy 3 columns on medium-sized screens -->
                                 <div class="card shopee-card">
-                                    <div class="card-body">
+                                    <div class="card-body product-container">
                                         <div id="carousel{{ $product->id }}" class="carousel slide" data-ride="carousel">
                                             <div class="carousel-inner">
                                                 @foreach (explode(',', $product->img_path) as $key => $imgPath)
@@ -38,7 +38,8 @@
                                         <p class="card-text" style="font-family: 'Roboto', sans-serif;">Type: {{ $product->type }}</p>
                                         <p class="card-text" style="font-family: 'Roboto', sans-serif;">Description: {{ $product->description }}</p>
                                         <p class="card-text" style="font-family: 'Roboto', sans-serif;">Cost: ₱{{ $product->cost }}</p>
-                                        <a href="{{ route('cart.add', ['product_id' => $product->id]) }}" class="btn btn-orange mt-3 add-to-cart-btn" style="font-family: 'Roboto', sans-serif;">Add to Cart</a>
+                                        <a href="{{ route('cart.add', $product->id) }}" class="btn btn-orange mt-3 add-to-cart-btn" style="font-family: 'Roboto', sans-serif;">Add to Cart</a>
+                                        {{-- <a href="{{ route('cart.add', ['product_id' => $product->id]) }}" class="btn btn-orange mt-3 add-to-cart-btn" style="font-family: 'Roboto', sans-serif;">Add to Cart</a> --}}
                                     </div>
                                 </div>
                             </div>
@@ -48,6 +49,10 @@
                 </div>
 
     <style>
+        .product-container {
+        width: 100%; /* Set the desired width */
+        height: 450px; /* Set the desired height */
+    }
         .navbar {
             background-color: #f05026; /* Shopee orange */
             color: #ffffff; /* White */
@@ -137,18 +142,19 @@
             font-family: 'Roboto', sans-serif;
         }
         .add-to-cart-btn {
-            background-color: #f05026; /* Set your desired color */
-            color: #ffffff; /* Set text color */
-            border: none; /* Remove border */
-            border-radius: 5px; /* Add border radius for button */
-            padding: 10px 20px; /* Add padding for button */
-            font-size: 16px; /* Set font size */
-            transition: background-color 0.3s ease; /* Add transition effect for hover */
+        background-color: #f05026; /* Set your desired color */
+        color: #ffffff; /* Set text color */
+        border: none; /* Remove border */
+        border-radius: 5px; /* Add border radius for button */
+        padding: 10px 20px; /* Add padding for button */
+        font-size: 16px; /* Set font size */
+        transition: background-color 0.3s ease; /* Add transition effect for hover */
         }
 
         .add-to-cart-btn:hover {
             background-color: #e0401b; /* Change background color on hover */
         }
+
         .logout-button.shopee-theme {
             background-color: #ee4d2d; /* Adjust the color to match your Shopee theme */
             color: #fff; /* Text color */

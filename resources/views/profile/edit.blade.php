@@ -16,26 +16,20 @@
 
                     <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
                         @csrf
-
-                        <!-- Common Fields for Both User Types -->
-
                         <!-- Display Current Photo -->
                         <div class="form-group">
                             <label for="current_photo">{{ __('Current Photo') }}</label>
-                                @if($user->image && $user->image()->exists())
-                                    @foreach($user->image as $image)
-                                        <img src="{{ asset('storage/images/'.$image->user_image) }}" alt="Current Photo" style="max-width: 100px; margin-bottom: 5px;">
-                                    @endforeach
-                                @else
-                                    <p>No photo uploaded</p>
-                                @endif
+                            {{-- @if($user->image) --}}
+                                    <img src="{{ url($user->image->user_image) }}" alt="Current Photo" style="max-width: 100px; margin-bottom: 5px;">
+                            {{-- @else --}}
+                            {{-- @endif --}}
                         </div>
 
                         <!-- Upload New Photo -->
                         <div class="form-group">
                             <label for="photo">{{ __('Photo') }}</label>
-                            <input id="photo" type="file" class="form-control @error('photo') is-invalid @enderror" name="photo">
-                            @error('photo')
+                            <input id="user_image" type="file" class="form-control @error('user_image') is-invalid @enderror" name="user_image">
+                            @error('user_image')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -62,8 +56,11 @@
                             @enderror
                         </div>
 
+                        <div class="form-group">
+                            <label for="password_confirmation">{{ __('Confirm Password') }}</label>
+                            <input id="password_confirmation" type="password" class="form-control" name="password_confirmation">
+                        </div>
 
-                        <!-- Additional Fields for Customer -->
                         @if($customer)
                             <div class="form-group">
                                 <label for="username">{{ __('Username') }}</label>

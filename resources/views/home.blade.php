@@ -14,6 +14,7 @@
                     {{ __('You are logged in!') }}
                     <a href="{{ route('customer.index') }}" class="btn btn-primary">Shop</a>
                 </div>
+                </div>
             </div>
         </div>
     </div>

@@ -26,7 +26,7 @@ class ProfileController extends Controller
     $request->validate([
         'name' => 'required|string|max:255',
         'password' => 'nullable|string|min:8|confirmed',
-        'photo' => 'nullable|image|max:2048', // Assuming max file size is 2MB
+        'user_image' => 'nullable|image|max:2048', // Assuming max file size is 2MB
     ]);
 
     $user = Auth::user();
@@ -37,13 +37,18 @@ class ProfileController extends Controller
     }
 
     // Handle photo upload
-    if ($request->hasFile('photo')) {
-        $image = $request->file('photo');
-        $imageName = $image->getClientOriginalName();
-        $image->storeAs('public/images', $imageName);
+    if ($request->hasFile('user_image')) {
+        $image = $request->file('user_image');
+        // Validate the uploaded file
+        $validatedImage = $request->validate([
+            'user_image' => 'image|max:2048', // Assuming max file size is 2MB
+        ]);
+        // Store the image
+        $path = $image->store('public/images');
+        $user_image = str_replace('public/', 'storage/', $path);
 
         // Update or create associated image record
-        $user->image()->updateOrCreate([], ['user_image' => $imageName]);
+        $user->image()->updateOrCreate([], ['user_image' => $user_image]);
     }
 
     // Update customer profile if exists

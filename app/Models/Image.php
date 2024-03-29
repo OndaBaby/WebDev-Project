@@ -9,6 +9,7 @@ class Image extends Model
 {
     use HasFactory;
     protected $table = 'images';
+    protected $primaryKey = "user_id";
 
     protected $fillable = [
         'user_id',
@@ -16,6 +17,6 @@ class Image extends Model
     ];
 
     public function user() {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class);
     }
 }

@@ -47,91 +47,86 @@ class CartController extends Controller
         return redirect()->route('cart.index');
     }
 
-    public function addToCart(Request $request)
+    public function addToCart($product_id)
     {
-        $product_id = $request->input('product_id');
-        $customer_id = auth()->user()->id;
+        $user = auth()->user();
 
-        // Check if the product already exists in the cart
+        // Check if the user has associated customer data
+        $customer = $user->customer;
+
+        if (!$customer) {
+            return redirect()->route('customer.create');
+        }
+
+        $customer_id = $customer->id;
+
+        // Find existing cart item for the customer and product
         $existingCartItem = Cart::where('customer_id', $customer_id)
             ->where('product_id', $product_id)
             ->first();
 
         if ($existingCartItem) {
-            // If the product exists, increment the quantity
-            $existingCartItem->increment('cart_qty');
+            $existingCartItem->update(['cart_qty' => $existingCartItem->cart_qty + 1]);
         } else {
-            // If the product does not exist, create a new entry in the cart
-            Cart::create([
-                'customer_id' => $customer_id,
+            $cartItem = Cart::create([
+                'customer_id' => $customer->id,
                 'product_id' => $product_id,
-                'cart_qty' => 1, // Set default quantity to 1
+                'cart_qty' => 1,
             ]);
         }
-
-        // Update the session cart
-        $this->updateSessionCart($request, $product_id, 1);
-
         return redirect()->route('customer.index');
-    }
-
-    private function updateSessionCart(Request $request, $product_id, $cart_qty)
-    {
-        $cartItems = $request->session()->get('cart.items', []);
-
-        // Check if the product already exists in the session cart
-        $found = false;
-        foreach ($cartItems as &$item) {
-            if ($item['product_id'] == $product_id) {
-                $item['cart_qty'] += $cart_qty;
-                $found = true;
-                break;
-            }
-        }
-
-        if (!$found) {
-            $cartItems[] = [
-                'product_id' => $product_id,
-                'cart_qty' => $cart_qty,
-            ];
-        }
-
-        // Update the session cart
-        $request->session()->put('cart.items', $cartItems);
     }
 
     // public function addToCart(Request $request)
     // {
-    //     $productId = $request->query('product_id');
+    //     $product_id = $request->input('product_id');
+    //     $customer_id = auth()->user()->id;
 
-    //     $product = Product::findOrFail($productId);
+    //     // Check if the product already exists in the cart
+    //     $existingCartItem = Cart::where('customer_id', $customer_id)
+    //         ->where('product_id', $product_id)
+    //         ->first();
 
-    //     $user = auth()->user();
-    //     $customer = $user->customer;
-
-    //     if (!$customer) {
-    //         return redirect()->route('customer.create');
-    //     }
-
-    //     $customer_id = $customer->id;
-
-    //     // Fetch the existing cart Product for the current customer and product
-    //     $existingCartProduct = Cart::where('customer_id', $customer_id)
-    //                             ->where('product_id', $product->id)
-    //                             ->first();
-
-    //     if ($existingCartProduct) {
-    //         // If the cart Product already exists, increment the cart_qty
-    //         $existingCartProduct->increment('cart_qty'); // Increment cart_qty by 1
+    //     if ($existingCartItem) {
+    //         // If the product exists, increment the quantity
+    //         $existingCartItem->increment('cart_qty');
     //     } else {
-    //         // If the cart Product does not exist, create a new one
-    //         $cartProduct = new Cart();
-    //         $cartProduct->customer_id = $customer_id;
-    //         $cartProduct->product_id = $product->id;
-    //         $cartProduct->cart_qty = 1;
-    //         $cartProduct->save();
+    //         // If the product does not exist, create a new entry in the cart
+    //         Cart::create([
+    //             'customer_id' => $customer_id,
+    //             'product_id' => $product_id,
+    //             'cart_qty' => 1, // Set default quantity to 1
+    //         ]);
     //     }
+
+    //     $this->updateSessionCart($request, $product_id, 1);
+
     //     return redirect()->route('customer.index');
+    // }
+
+    // private function updateSessionCart(Request $request, $product_id, $cart_qty)
+    // {
+    //     $cartItems = $request->session()->get('cart.items', []);
+
+    //     // Check if the product already exists in the session cart
+    //     $found = false;
+    //     foreach ($cartItems as &$item) {
+    //         if ($item['product_id'] == $product_id) {
+    //             $item['cart_qty'] += $cart_qty;
+    //             $found = true;
+    //             break;
+    //         }
+    //     }
+
+    //     if (!$found) {
+    //         $cartItems[] = [
+    //             'product_id' => $product_id,
+    //             'cart_qty' => $cart_qty,
+    //         ];
+    //     }
+
+    //     // Update the session cart
+    //     $request->session()->put('cart.items', $cartItems);
     // }
 
     public function checkout(Request $request)
@@ -168,6 +163,41 @@ class CartController extends Controller
             return redirect()->back()->with('error', 'Failed to process your order. Please try again.');
         }
     }
+
+    // public function addToCart(Request $request)
+    // {
+    //     $productId = $request->query('product_id');
+
+    //     $product = Product::findOrFail($productId);
+
+    //     $user = auth()->user();
+    //     $customer = $user->customer;
+
+    //     if (!$customer) {
+    //         return redirect()->route('customer.create');
+    //     }
+
+    //     $customer_id = $customer->id;
+
+    //     // Fetch the existing cart Product for the current customer and product
+    //     $existingCartProduct = Cart::where('customer_id', $customer_id)
+    //                             ->where('product_id', $product->id)
+    //                             ->first();
+
+    //     if ($existingCartProduct) {
+    //         // If the cart Product already exists, increment the cart_qty
+    //         $existingCartProduct->increment('cart_qty'); // Increment cart_qty by 1
+    //     } else {
+    //         // If the cart Product does not exist, create a new one
+    //         $cartProduct = new Cart();
+    //         $cartProduct->customer_id = $customer_id;
+    //         $cartProduct->product_id = $product->id;
+    //         $cartProduct->cart_qty = 1;
+    //         $cartProduct->save();
+    //     }
+    //     return redirect()->route('customer.index');
+    // }
+
 
     // public function addToCart($id)
     // {

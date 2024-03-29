@@ -11,7 +11,7 @@ class Cart extends Model
     protected $table = 'carts';
     protected $primaryKey = null;
     public $incrementing = false;
-    protected $fillable = ['customer_id', 'product_id', 'quantity'];
+    protected $fillable = ['customer_id', 'product_id','cart_qty'];
 
     public function customerC() {
         return $this->belongsTo(Customer::class);
