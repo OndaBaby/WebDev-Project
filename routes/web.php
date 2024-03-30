@@ -34,7 +34,7 @@ Route::get('/contact', function () {
     return view('contact.contact');
 })->name('contact');
 
-Route::get('/search', [CustomerController::class, 'search'])->name('customer.search');
+Route::get('/search', [UserController::class, 'search'])->name('customer.search');
 
 Route::get('/', [ProductController::class, 'welcome'])->name('welcome');
 
@@ -51,7 +51,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/customer/create', [CustomerController::class, 'create'])->name('customer.create');
     Route::post('/customer/store', [CustomerController::class, 'store'])->name('customer.store');
 
-    Route::get('/feedback', [FeedbackController::class, 'index'])->name('feedback');
+    Route::get('//feedback/{product_id}', [FeedbackController::class, 'index'])->name('feedback');
     Route::get('/feedback/create', [FeedbackController::class, 'create'])->name('feedback.create');
     Route::post('/feedback/store', [FeedbackController::class, 'store'])->name('feedback.store');
     Route::get('/feedback/{id}/edit', [FeedbackController::class, 'edit'])->name('feedback.edit');

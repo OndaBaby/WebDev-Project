@@ -37,7 +37,7 @@
                                             <p class="card-text" style="font-family: 'Roboto', sans-serif;">Type: {{ $product->type }}</p>
                                             <p class="card-text" style="font-family: 'Roboto', sans-serif;">Description: {{ $product->description }}</p>
                                             <p class="card-text" style="font-family: 'Roboto', sans-serif;">Cost: ₱{{ $product->cost }}</p>
-                                            <a href="{{ route('feedback') }}" class="btn btn-primary mt-3 review-button" style="font-size: 14px;">
+                                            <a href="{{ route('feedback', ['product_id' => $product->id]) }}" class="btn btn-primary mt-3 review-button" style="font-size: 14px;">
                                                 <i class="fas fa-info-circle"></i>
                                             </a>
                                             <a href="{{ route('cart.add', $product->id) }}" class="btn btn-orange mt-3 mr-2 add-to-cart-btn" style="font-family: 'Roboto', sans-serif;">Add to Cart</a>
@@ -60,7 +60,7 @@
         width: 100%; /* Set the desired width */
         height: 450px; /* Set the desired height */
     }
-    
+
     .navbar {
         background-color: #f05026; /* Shopee orange */
         color: #ffffff; /* White */

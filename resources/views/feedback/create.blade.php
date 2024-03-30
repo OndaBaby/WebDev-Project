@@ -20,48 +20,55 @@
 </div>
 @endsection --}}
 
-
 @extends('layouts.app')
 
 @section('content')
-<div class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white" style="font-family: 'sans-serif';">
-    <div class="max-w-7xl mx-auto p-6 lg:p-8">
-        <div class="mt-16">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                @foreach ($products as $product)
-                <div class="col-md-3 mb-4"> <!-- Use col-md-3 to make each container occupy 3 columns on medium-sized screens -->
-                    <div class="card shopee-card">
-                        <div class="card-body product-container">
-                            <div id="carousel{{ $product->id }}" class="carousel slide" data-ride="carousel">
-                                <div class="carousel-inner">
-                                    @foreach (explode(',', $product->img_path) as $key => $imgPath)
-                                    <div class="carousel-item {{ $key === 0 ? 'active' : '' }}">
-                                        <img src="{{ asset($imgPath) }}" alt="Product Image {{ $key + 1 }}" class="d-block w-100 product-image">
-                                    </div>
-                                    @endforeach
-                                </div>
-                                <a class="carousel-control-prev" href="#carousel{{ $product->id }}" role="button" data-slide="prev">
-                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                    <span class="sr-only">Previous</span>
-                                </a>
-                                <a class="carousel-control-next" href="#carousel{{ $product->id }}" role="button" data-slide="next">
-                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                    <span class="sr-only">Next</span>
-                                </a>
+<div class="container mt-4">
+    <h1>Create Feedback</h1>
+    <div class="container">
+        <div class="col-md-3 mb-4"> <!-- Use col-md-3 to make each container occupy 3 columns on medium-sized screens -->
+            <div class="card shopee-card">
+                <div class="card-body product-container">
+                    <div id="carousel{{ $product->id }}" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner">
+                            @foreach (explode(',', $product->img_path) as $key => $imgPath)
+                            <div class="carousel-item {{ $key === 0 ? 'active' : '' }}">
+                                <img src="{{ asset($imgPath) }}" alt="Product Image {{ $key + 1 }}" class="d-block w-100 product-image">
                             </div>
-                            <h5 class="card-title" style="font-family: 'Roboto', sans-serif;">{{ $product->name }}</h5>
-                            <p class="card-text" style="font-family: 'Roboto', sans-serif;">Type: {{ $product->type }}</p>
-                            <p class="card-text" style="font-family: 'Roboto', sans-serif;">Description: {{ $product->description }}</p>
-                            <p class="card-text" style="font-family: 'Roboto', sans-serif;">Cost: ₱{{ $product->cost }}</p>
+                            @endforeach
                         </div>
+                        <a class="carousel-control-prev" href="#carousel{{ $product->id }}" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carousel{{ $product->id }}" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
                     </div>
+                    <h5 class="card-title" style="font-family: 'Roboto', sans-serif;">{{ $product->name }}</h5>
+                    <p class="card-text" style="font-family: 'Roboto', sans-serif;">Type: {{ $product->type }}</p>
+                    <p class="card-text" style="font-family: 'Roboto', sans-serif;">Description: {{ $product->description }}</p>
+                    <p class="card-text" style="font-family: 'Roboto', sans-serif;">Cost: ₱{{ $product->cost }}</p>
                 </div>
-                @endforeach
             </div>
         </div>
+        <form action="{{ route('feedback.store')}}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="form-group">
+                <label for="comment">Comment: </label>
+                <input type="text" class="form-control" name="comments" required>
+            </div>
+            <div class="form-group">
+                <label for="img_path">Image: </label>
+                <input type="file" class="form-control-file" name="img_path[]" multiple required>
+            </div>
+            <input type="hidden" name="product_id" value="{{ $product->id }}">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
     </div>
 </div>
-<form action="{{ route('feedback.store')}}" method="POST" enctype="multipart/form-data">
+{{-- <form action="{{ route('feedback.store')}}" method="POST" enctype="multipart/form-data">
     @csrf
     <div class="form-group">
         <label for="comment">Comment: </label>
@@ -73,7 +80,7 @@
     </div>
     <input type="hidden" name="product_id" value="{{ request()->query('product_id') }}">
     <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+</form> --}}
 <style>
     .product-container {
         width: 100%; /* Set the desired width */

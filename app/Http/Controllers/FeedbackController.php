@@ -10,21 +10,6 @@ use Illuminate\Support\Facades\Auth;
 class FeedbackController extends Controller
 {
 
-    // public function index()
-    // {
-    //     $user = Auth::user();
-
-    //     $feedback = Feedback::where('customer_id', $user->customer->id)
-    //                         ->orderByDesc('created_at')
-    //                         ->get();
-    //     $allFeedback = Feedback::orderByDesc('created_at')->get();
-    //     $filteredFeedback = $allFeedback->filter(function ($item) use ($user) {
-    //         return $item->customer_id == $user->customer->id;
-    //     });
-
-    //     return view('feedback.index', compact('feedback', 'filteredFeedback', 'allFeedback'));
-    // }
-
     public function showFeedback($id)
     {
         $product = Product::findOrFail($id);
@@ -35,7 +20,31 @@ class FeedbackController extends Controller
         return view('feedback.show', compact('feedbacks', 'product'));
     }
 
-    public function index()
+
+    // public function index()
+    // {
+    //     $user = Auth::user();
+
+    //     $feedback = Feedback::where('customer_id', $user->customer->id)
+    //                         ->orderByDesc('created_at')
+    //                         ->get();
+
+    //     $allFeedback = Feedback::orderByDesc('created_at')->get();
+
+    //     // Prioritize feedback of the currently logged-in customer
+    //     $priorityFeedback = $allFeedback->filter(function ($item) use ($user) {
+    //         return $item->customer_id == $user->customer->id;
+    //     });
+
+    //     $otherFeedback = $allFeedback->diff($priorityFeedback);
+
+    //     // Merge the prioritized feedback with the rest
+    //     $sortedFeedback = $priorityFeedback->merge($otherFeedback);
+
+    //     return view('feedback.index', compact('feedback', 'sortedFeedback'));
+    // }
+
+    public function index($product_id)
     {
         $user = Auth::user();
 
@@ -43,17 +52,10 @@ class FeedbackController extends Controller
                             ->orderByDesc('created_at')
                             ->get();
 
-        $allFeedback = Feedback::orderByDesc('created_at')->get();
-
-        // Prioritize feedback of the currently logged-in customer
-        $priorityFeedback = $allFeedback->filter(function ($item) use ($user) {
-            return $item->customer_id == $user->customer->id;
-        });
-
-        $otherFeedback = $allFeedback->diff($priorityFeedback);
-
-        // Merge the prioritized feedback with the rest
-        $sortedFeedback = $priorityFeedback->merge($otherFeedback);
+        // Filter feedback based on the product_id
+        $sortedFeedback = Feedback::where('product_id', $product_id)
+                                    ->orderByDesc('created_at')
+                                    ->get();
 
         return view('feedback.index', compact('feedback', 'sortedFeedback'));
     }
@@ -89,7 +91,7 @@ class FeedbackController extends Controller
             $feedback->img_path = implode(',', $img_paths);
         }
         $feedback->save();
-        return redirect()->route('review.index')->with('success', 'Feedback created successfully.');
+        return redirect()->route('feedback')->with('success', 'Feedback created successfully.');
     }
 
     public function edit($id)
@@ -131,15 +133,9 @@ class FeedbackController extends Controller
                 $path = $image->store('public/images');
                 $img_paths[] = str_replace('public/', 'storage/', $path);
             }
-            // Combine new image paths with existing ones
-            // $existing_paths = explode(',', $feedback->img_path);
-            // $updated_paths = array_merge($existing_paths, $img_paths);
             $feedback->img_path = implode(',', $img_paths);
         }
-
-        // Save the updated feedback
         $feedback->save();
-
         return redirect()->route('review.index')->with('success', 'Feedback updated successfully.');
     }
 

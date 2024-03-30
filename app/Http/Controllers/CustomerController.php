@@ -42,24 +42,6 @@ class CustomerController extends Controller
         return redirect()->route('customer.index');
     }
 
-    public function search(Request $request)
-    {
-        $searchQuery = $request->input('query');
-
-        // Perform the search using LIKE query on Product name or description
-        $searchResults = Product::where('name', 'like', '%' . $searchQuery . '%')
-            ->orWhere('description', 'like', '%' . $searchQuery . '%')
-            ->latest('created_at')
-            ->get();
-
-        // Check if the user is logged in
-        if (auth()->check()) {
-            return view('customer.index', compact('searchResults'));
-        } else {
-            return view('welcome', compact('searchResults'));
-            // return redirect()->route('welcome')->with('searchResults', $searchResults);
-        }
-    }
 
     public function myorder()
     {

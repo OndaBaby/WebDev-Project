@@ -321,8 +321,7 @@
                             <a href="{{ route('inventory') }}" class="nav-link">Inventory</a>
                         @else
                             <a href="{{ route('cart') }}" class="nav-link"><i class="fas fa-shopping-cart"></i>Cart</a>
-                            <a href="#" class="nav-link"class="nav-link"><i class="fas fa-bag"></i>My Order</a>
-                            <a href="#" class="nav-link">Button 2</a>
+                            <a href="{{ route('myorder') }}" class="nav-link"class="nav-link"><i class="fas fa-bag"></i>My Order</a>
                         @endif
                         <div class="dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
