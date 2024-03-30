@@ -7,9 +7,13 @@ use App\Models\Cart;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Order;
+use App\Models\Payment;
+use App\Models\Inventory;
 use Illuminate\Support\Facades\Auth;
 use DB;
 use Session;
+use Exception;
+use Carbon\Carbon;
 
 class CartController extends Controller
 {
@@ -51,7 +55,6 @@ class CartController extends Controller
     {
         $user = auth()->user();
 
-        // Check if the user has associated customer data
         $customer = $user->customer;
 
         if (!$customer) {
@@ -76,6 +79,209 @@ class CartController extends Controller
         }
         return redirect()->route('customer.index');
     }
+
+    public function checkout()
+    {
+        $user = Auth::user();
+        if (!$user->customer) {
+            return redirect()->route('customer.create')->with('error', 'You do not have a customer record.');
+        }
+        $customerId = $user->customer->id;
+
+        $shippingFee = 50;
+
+        try {
+            DB::beginTransaction();
+
+            // Retrieve cart items for the authenticated user
+            $cartItems = Cart::where('customer_id', $customerId)->get();
+
+            $order = Order::create([
+                'customer_id' => $customerId,
+                'shipping_fee' => $shippingFee,
+                'status' => 'Pending',
+                'date_placed' => now(),
+                'date_shipped' => Carbon::now()->addDays(5),
+            ]);
+
+            $orderLinesValues = '';
+
+            foreach ($cartItems as $cartItem) {
+                $productId = $cartItem->product_id;
+                $quantity = $cartItem->cart_qty;
+
+                $orderLinesValues .= "($order->id, $productId, $quantity),";
+
+                // Update inventory
+                $inventory = Inventory::where('product_id', $productId)->firstOrFail();
+                $inventory->stock -= $quantity;
+                $inventory->save();
+            }
+
+            $orderLinesValues = rtrim($orderLinesValues, ',');
+
+            if (!empty($orderLinesValues)) {
+                $sql = "INSERT INTO orderlines (order_id, product_id, qty) VALUES $orderLinesValues";
+                DB::statement($sql);
+            }
+
+            // Create payment entry
+            Payment::create([
+                'order_id' => $order->id,
+                'mode_of_payment' => 'Cash',
+                'date_of_payment' => now(),
+            ]);
+
+            // Delete cart items associated with the user
+            Cart::where('customer_id', $customerId)->delete();
+
+            DB::commit();
+
+            return redirect()->route('cart.index')->with('success', 'Placed order successfully');
+        } catch (Exception $e) {
+            DB::rollback();
+            return redirect()->route('checkout')->with('error', 'Failed to complete the checkout.');
+        }
+    }
+
+
+    // public function checkout()
+    // {
+    //     $user = Auth::user();
+    //     if (!$user->customer) {
+    //         return redirect()->route('customer.create')->with('error', 'You do not have a customer record.');
+    //     }
+    //     $customerId = $user->customer->id;
+
+    //     $shippingFee = 50;
+    //     $products = [];
+
+
+    //     try {
+    //         DB::beginTransaction();
+
+    //         $order = Order::create([
+    //             'customer_id' => $customerId,
+    //             'shipping_fee' => $shippingFee,
+    //             'status' => 'Pending',
+    //             'date_placed' => now(),
+    //             'date_shipped' => Carbon::now()->addDays(5),
+    //         ]);
+
+    //         $orderLinesValues = '';
+    //         $inventoryUpdates = [];
+
+    //         foreach ($products as $productId => $quantity) {
+    //             $orderLinesValues .= "($order->id, $productId, $quantity),";
+
+    //             $inventoryUpdates[] = "UPDATE inventories SET stock = stock - $quantity WHERE product_id = $productId;";
+    //         }
+
+    //         $orderLinesValues = rtrim($orderLinesValues, ',');
+    //         if (!empty($orderLinesValues)) {
+    //             DB::insert("INSERT INTO orderlines (order_id, product_id, qty) VALUES $orderLinesValues");
+    //         }
+
+    //         // Execute inventory update queries
+    //         foreach ($inventoryUpdates as $query) {
+    //             DB::statement($query);
+    //         }
+
+    //         Payment::create([
+    //             'order_id' => $order->id,
+    //             'mode_of_payment' => 'Cash',
+    //             'date_of_payment' => now(),
+    //         ]);
+    //         DB::commit();
+
+    //         return redirect()->route('cart.index')->with('success', 'Placed order successfully');
+    //     } catch (Exception $e) {
+    //         DB::rollback();
+    //         return redirect()->route('checkout')->with('error', 'Failed to complete the checkout.');
+    //     }
+    // }
+
+
+        // public function updateCart(Request $request)
+    // {
+    //     // Get the cart data from the request
+    //     $cartData = $request->input('quantity');
+
+    //     foreach ($cartData as $cartId => $quantity) {
+    //         // Find the cart item
+    //         $cartItem = Cart::find($cartId);
+
+    //         if ($cartItem) {
+    //             // Update the quantity
+    //             $cartItem->cart_qty = $quantity;
+    //             $cartItem->save();
+    //         }
+    //     }
+
+    //     return redirect()->back()->with('success', 'Cart updated successfully');
+    // }
+
+
+    // public function checkout()
+    // {
+    //     $user = Auth::user();
+    //     if (!$user->customer) {
+    //         return redirect()->route('customer.create')->with('error', 'You do not have a customer record.');
+    //     }
+    //     $customerId = $user->customer->id;
+
+    //     $shippingFee = 50;
+
+    //     try {
+    //         DB::beginTransaction();
+
+    //         // Retrieve cart items for the authenticated user
+    //         $cartItems = Cart::where('customer_id', $customerId)->get();
+
+    //         $order = Order::create([
+    //             'customer_id' => $customerId,
+    //             'shipping_fee' => $shippingFee,
+    //             'status' => 'Pending',
+    //             'date_placed' => now(),
+    //             'date_shipped' => Carbon::now()->addDays(5),
+    //         ]);
+
+    //         $orderLinesValues = '';
+
+    //         foreach ($cartItems as $cartItem) {
+    //             $productId = $cartItem->product_id;
+    //             $quantity = $cartItem->cart_qty;
+
+    //             $orderLinesValues .= "($order->id, $productId, $quantity),";
+
+    //             // Update inventory
+    //             $inventory = Inventory::where('product_id', $productId)->firstOrFail();
+    //             $inventory->stock -= $quantity;
+    //             $inventory->save();
+    //         }
+
+    //         $orderLinesValues = rtrim($orderLinesValues, ',');
+
+    //         if (!empty($orderLinesValues)) {
+    //             $sql = "INSERT INTO orderlines (order_id, product_id, qty) VALUES $orderLinesValues";
+    //             DB::statement($sql);
+    //         }
+
+    //         // Create payment entry
+    //         Payment::create([
+    //             'order_id' => $order->id,
+    //             'mode_of_payment' => 'Cash',
+    //             'date_of_payment' => now(),
+    //         ]);
+
+    //         DB::commit();
+
+    //         return redirect()->route('cart.index')->with('success', 'Placed order successfully');
+    //     } catch (Exception $e) {
+    //         DB::rollback();
+    //         return redirect()->route('checkout')->with('error', 'Failed to complete the checkout.');
+    //     }
+    // }
 
     // public function addToCart(Request $request)
     // {
@@ -129,40 +335,56 @@ class CartController extends Controller
     //     $request->session()->put('cart.items', $cartItems);
     // }
 
-    public function checkout(Request $request)
-    {
-        $user = Auth::user();
+    // public function checkout()
+    // {
+    //     $user = Auth::user();
+    //     if (!$user->customer) {
+    //         return redirect()->route('customer.create')->with('error', 'You do not have a customer record.');
+    //     }
 
-        DB::beginTransaction();
+    //     $customerId = $user->customer->id;
+    //     $cartItems = Cart::where('customer_id', $customerId)->get();
+    //     $shippingFee = 0;
 
-        try {
-            $order = new Order();
-            $order->customer_id = $user->id;
-            $order->shipping_fee = 50;
-            $order->status = 'Processing';
-            $order->dateplaced = now();
-            $order->date_shipped = null;
-            $order->save();
+    //     DB::beginTransaction();
+    //     try {
+    //         $order = Order::create([
+    //             'customer_id' => $customerId,
+    //             'shipping_fee' => $shippingFee,
+    //             'status' => 'pending',
+    //             'date_placed' => now(),
+    //             'date_shipped' => Carbon::now()->addDays(5),
+    //         ]);
 
-            foreach ($user->cartItems as $cartItem) {
-                $order->products()->attach($cartItem->product_id, ['cart_qty' => $cartItem->quantity]);
+    //         foreach ($cartItems as $cartItem) {
+    //             $product = Product::find($cartItem->products_id);
 
-                $product = Product::find($cartItem->product_id);
-                $product->stock -= $cartItem->quantity;
-                $product->save();
-            }
+    //             if (!$product) {
+    //                 throw new Exception("Product not found");
+    //             }
 
-            // Clear the user's cart after checkout
-            $user->cartItems()->delete();
+    //             $order->products()->attach(
+    //                 $product->id,
+    //                 ['qty' => $cartItem->cart_qty]
+    //             );
 
-            DB::commit();
+    //             $product->decrement('stock', $cartItem->cart_qty);
+    //             $cartItem->delete();
+    //         }
 
-            return redirect()->route('home')->with('success', 'Your order has been placed successfully.');
-        } catch (\Exception $e) {
-            DB::rollback();
-            return redirect()->back()->with('error', 'Failed to process your order. Please try again.');
-        }
-    }
+    //         Payment::create([
+    //             'order_id' => $order->id,
+    //             'mode_of_payment' => 'Cash',
+    //             'date_of_payment' => now(),
+    //         ]);
+
+    //         DB::commit();
+    //         return redirect()->route('cart')->with('success', 'Placed order successfully.');
+    //     } catch (Exception $e) {
+    //         DB::rollback();
+    //         return redirect()->route('checkout')->with('error', 'Failed to complete the checkout.');
+    //     }
+    // }
 
     // public function addToCart(Request $request)
     // {

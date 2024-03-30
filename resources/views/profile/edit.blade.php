@@ -1,6 +1,6 @@
-@extends('layouts.master')
+@extends('layouts.app')
 
-@section('body')
+@section('content')
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -16,16 +16,10 @@
 
                     <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
                         @csrf
-                        <!-- Display Current Photo -->
                         <div class="form-group">
                             <label for="current_photo">{{ __('Current Photo') }}</label>
-                            {{-- @if($user->image) --}}
-                                    <img src="{{ url($user->image->user_image) }}" alt="Current Photo" style="max-width: 100px; margin-bottom: 5px;">
-                            {{-- @else --}}
-                            {{-- @endif --}}
+                            <img src="{{ url($user->image->user_image) }}" alt="Current Photo" style="max-width: 100px; margin-bottom: 5px;">
                         </div>
-
-                        <!-- Upload New Photo -->
                         <div class="form-group">
                             <label for="photo">{{ __('Photo') }}</label>
                             <input id="user_image" type="file" class="form-control @error('user_image') is-invalid @enderror" name="user_image">

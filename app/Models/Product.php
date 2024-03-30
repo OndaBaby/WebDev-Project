@@ -23,7 +23,7 @@ class Product extends Model
         return $this->hasMany(Inventory::class);
     }
 
-    public function feedbackP() {
+    public function feedbacks() {
         return $this->hasMany(Feedback::class);
     }
 

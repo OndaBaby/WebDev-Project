@@ -12,6 +12,12 @@ use Redirect;
 
 class ProductController extends Controller
 {
+    public function welcome()
+    {
+        $products = Product::all();
+        return view('welcome', compact('products'));
+    }
+
     public function producttable(ProductDataTable $dataTable)
     {
         return $dataTable->render('datatable.product');

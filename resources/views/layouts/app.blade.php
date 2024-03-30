@@ -301,7 +301,7 @@
         <div id="app">
             <!-- Header -->
             <header class="navbar">
-                <a href="{{ Auth::check() ? (Auth::user()->usertype === 'admin' ? route('admin.home') : route('home')) : route('home') }}" class="navbar-brand">
+                <a href="{{ Auth::check() ? (Auth::user()->usertype === 'admin' ? route('admin.home') : route('home')) : route('welcome') }}" class="navbar-brand">
                     <img src="{{ asset('storage/images/LogoE.png') }}" alt="ElectroKits Logo">
                     ElectroKits
                 </a>
@@ -313,7 +313,7 @@
                         <a href="{{ route('register') }}" class="nav-link">Register</a>
                     @else
                         @if(Auth::user()->usertype == 'admin')
-                            <a href="{{ route('product.index') }}" class="nav-link">Customers</a>
+                            <a href="{{ route('customer') }}" class="nav-link">Customers</a>
                             <a href="{{ route('product.index') }}" class="nav-link">Products</a>
                             <a href="{{ route('order.index') }}" class="nav-link">Orders</a>
                             <a href="{{ route('analytics') }}" class="nav-link">Analytics</a>
@@ -321,7 +321,7 @@
                             <a href="{{ route('inventory') }}" class="nav-link">Inventory</a>
                         @else
                             <a href="{{ route('cart') }}" class="nav-link"><i class="fas fa-shopping-cart"></i>Cart</a>
-                            <a href="#" class="nav-link">Button 1</a>
+                            <a href="#" class="nav-link"class="nav-link"><i class="fas fa-bag"></i>My Order</a>
                             <a href="#" class="nav-link">Button 2</a>
                         @endif
                         <div class="dropdown">

@@ -1,16 +1,17 @@
 @extends('layouts.app')
+
 @section('content')
     <style>
         /* Custom styles for the header */
         .navbar {
-            background-color: #f05026; /* Shopee orange */
+            background-color: #f05026;
             color: #ffffff; /* White */
             padding: 20px 20px;
             box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-family: 'Roboto', sans-serif; /* Apply Roboto font */
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
         .navbar-brand {
             color: #ffffff; /* White */
@@ -52,45 +53,74 @@
             width: 30px; /* Adjust the width as needed */
         }
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f9f9f9;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Apply Shopee font */
             color: #333;
             margin: 0;
             padding: 0;
             line-height: 1.6;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
         }
         .container {
+            position: relative;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
+            color: #ffffff; /* White */
+            z-index: 1; /* Ensure content is above the video */
         }
-        h1, h2, h3 {
-            font-weight: 600;
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 100vh; /* Adjust the height as needed */
+            overflow: hidden;
         }
-        p {
-            margin-bottom: 20px;
-        }.logout-button.shopee-theme {
-        background-color: #ee4d2d; /* Adjust the color to match your Shopee theme */
-        color: #fff; /* Text color */
-        padding: 8px 16px; /* Adjust padding as needed */
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
+        .video-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1; /* Ensure video is behind other content */
         }
-
-        .logout-button.shopee-theme:hover {
-            background-color: #c6360b; /* Darker color on hover */
+        .image-container {
+            width: 100%;
+            height: 100vh; /* Same height as video containers */
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .image-container img {
+            max-width: 100%;
+            max-height: 100%;
         }
     </style>
-    <div class="container">
-        <h1>About Us</h1>
-        <p>Welcome to Your Company Name. We are dedicated to providing the best products and services to our customers.</p>
-        <h2>Our Mission</h2>
-        <p>Our mission is to deliver high-quality products that meet the needs of our customers.</p>
-        <h2>Our Team</h2>
-        <p>We have a dedicated team of professionals who are committed to delivering excellence in everything we do.</p>
-        <h2>Contact Us</h2>
-        <p>If you have any questions or inquiries, please feel free to <a href="contact">contact us</a>.</p>
+
+    <!-- Video Backgrounds -->
+    <div class="video-container">
+        <video autoplay loop muted class="video-bg">
+            <source src="{{ asset('videos/video (1).mp4') }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
     </div>
+<p></p>
+    <div class="video-container">
+        <video autoplay loop muted class="video-bg">
+            <source src="{{ asset('videos/video (2).mp4') }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+<p></p>
+<div class="video-container">
+    <video autoplay loop muted class="video-bg">
+        <source src="{{ asset('videos/video (3).mp4') }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+</div>
+<p></p>
+    <div class="image-container">
+        <img src="{{ asset('storage/images/history.png') }}" alt="History Image">
+    </div>
+
 @endsection

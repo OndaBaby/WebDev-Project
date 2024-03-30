@@ -9,14 +9,13 @@ class Feedback extends Model
 {
     use HasFactory;
     protected $table = 'feedback';
-
     protected $fillable = ['customer_id', 'product_id', 'comments', 'img_path'];
 
-    public function productF() {
+    public function product() {
         return $this->belongsTo(Product::class);
     }
 
-    public function customerF() {
-        return $this->belongsTo(Feedback::class);
+    public function customer() {
+        return $this->belongsTo(Customer::class);
     }
 }

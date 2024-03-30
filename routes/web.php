@@ -26,8 +26,6 @@ use App\Http\Controllers\ProfileController;
 |
 */
 
-Route::get('/', [UserController::class, 'welcome'])->name('welcome');
-
 Route::get('/about', function () {
     return view('contact.about');
 })->name('about');
@@ -36,17 +34,32 @@ Route::get('/contact', function () {
     return view('contact.contact');
 })->name('contact');
 
+Route::get('/search', [CustomerController::class, 'search'])->name('customer.search');
+
+Route::get('/', [ProductController::class, 'welcome'])->name('welcome');
+
+Route::get('/feedbacks/{id}', [FeedbackController::class, 'showFeedback'])->name('showFeedback');
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/shop', [CustomerController::class, 'index'])->name('customer.index');
-    Route::get('/search', [CustomerController::class, 'search'])->name('customer.search');
 
     Route::get('/dashboard', [UserController::class, 'index'])->name('dashboard');
 
+    Route::get('/myorder', [CustomerController::class, 'myorder'])->name('myorder');
+
     Route::get('/customer/create', [CustomerController::class, 'create'])->name('customer.create');
     Route::post('/customer/store', [CustomerController::class, 'store'])->name('customer.store');
-    
+
+    Route::get('/feedback', [FeedbackController::class, 'index'])->name('feedback');
+    Route::get('/feedback/create', [FeedbackController::class, 'create'])->name('feedback.create');
+    Route::post('/feedback/store', [FeedbackController::class, 'store'])->name('feedback.store');
+    Route::get('/feedback/{id}/edit', [FeedbackController::class, 'edit'])->name('feedback.edit');
+    Route::post('/feedback/{id}/update', [FeedbackController::class, 'update'])->name('feedback.update');
+    Route::delete('/feedback/{id}/delete', [FeedbackController::class, 'delete'])->name('feedback.delete');
+
     Route::get('/add-to-cart/{product_id}', [CartController::class, 'addToCart'])->name('cart.add');
+    Route::post('/update-cart', [CartController::class, 'updateCart'])->name('update.cart');
     //Route::get('/add-to-cart', [CartController::class, 'addToCart'])->name('cart.add');
 
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
@@ -58,6 +71,8 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth','is_admin'])->group(function () {
     // need for improvement
     Route::get('/adminhome', [HomeController::class, 'adminHome'])->name('admin.home');
+
+    Route::get('/customers', [AdminController::class, 'customer'])->name('customer');
 
     Route::get('/order', [OrderController::class, 'index'])->name('order.index');
     Route::post('/order/{id}/update', [OrderController::class, 'update'])->name('order.update');

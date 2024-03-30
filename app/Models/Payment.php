@@ -9,8 +9,8 @@ class Payment extends Model
 {
     use HasFactory;
     protected $table = 'payments';
-
-    protected $fillable = ['order_id', 'modeofpayment', 'dateofpayment'];
+    protected $primaryKey = 'id';
+    protected $fillable = ['order_id', 'mode_of_payment', 'date_of_payment'];
 
     public function orderP() {
         return $this->belongsTo(Order::class);

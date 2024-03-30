@@ -6,10 +6,23 @@ use Illuminate\Http\Request;
 use App\Charts\SalesChart;
 use App\Models\Product;
 use App\Models\Inventory;
+use App\Models\User;
+use App\Models\Customer;
+
 use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
+    public function customer()
+    {
+        // Fetch only customers with associated users of 'user' type
+        $customers = Customer::whereHas('user', function ($query) {
+            $query->where('usertype', 'user');
+        })->get();
+
+        return view('admin.customer', compact('customers'));
+    }
+    
     public function generateInventoryChart()
     {
         $data = Product::join('inventories', 'products.id', '=', 'inventories.product_id')
@@ -65,5 +78,5 @@ class AdminController extends Controller
         return view('admin.analytics', compact('salesChart'));
     }
 
-    
+
 }
