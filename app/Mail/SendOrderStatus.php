@@ -10,6 +10,7 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Attachment;
+use App\Models\Order;
 
 class SendOrderStatus extends Mailable
 {
@@ -19,12 +20,16 @@ class SendOrderStatus extends Mailable
      * Create a new message instance.
      */
 
-    public $order;
+     public $order;
+     public $shippingFee;
+     public $totalOrder;
 
-    public function __construct($order)
-    {
-        $this->order = $order;
-    }
+     public function __construct($order, $shippingFee, $totalOrder)
+     {
+         $this->order = $order;
+         $this->shippingFee = $shippingFee;
+         $this->totalOrder = $totalOrder;
+     }
 
     /**
      * Get the message envelope.
@@ -40,15 +45,25 @@ class SendOrderStatus extends Mailable
     /**
      * Get the message content definition.
      */
+    // public function content(): Content
+    // {
+    //     $total = $this->order->map(function ($product) {
+    //         return $product->qty * $product->cost;
+    //     });
+
+    //     return new Content(
+    //         view: 'email.order_status',
+    //         with: [
+    //             'order' => $this->order,
+    //             'orderTotal' => $total->sum(),
+    //         ]
+    //     );
+    // }
+
     public function content(): Content
     {
         $total = $this->order->map(function ($product) {
-            return [
-                'description' => $product->description,
-                'qty' => $product->pivot->qty,
-                'img_path' => $product->img_path,
-                'cost' => $product->cost
-            ];
+            return $product->qty * $product->cost;
         });
 
         return new Content(

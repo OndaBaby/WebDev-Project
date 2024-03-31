@@ -12,7 +12,7 @@
             align-items: center;
             font-family: 'Roboto', sans-serif; /* Apply Roboto font */
         }
-        
+
         .navbar-brand {
             color: #ffffff;
             font-weight: bold;

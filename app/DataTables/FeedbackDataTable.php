@@ -19,11 +19,50 @@ class FeedbackDataTable extends DataTable
      *
      * @param QueryBuilder $query Results from query() method.
      */
-    public function dataTable(QueryBuilder $query): EloquentDataTable
+    public function dataTable($query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('action', 'feedback.action')
-            ->setRowId('id');
+            ->addColumn('action', function ($product) {
+                if ($product->deleted_at === null) {
+                    // Product is not soft-deleted, show delete button
+                    $deleteBtn = '<form action="' . route('product.delete', $product->id) . '" method="POST" class="delete-form">';
+                    $deleteBtn .= csrf_field();
+                    $deleteBtn .= method_field('DELETE');
+                    $deleteBtn .= '<button type="submit" class="btn details btn-danger mt-1"><i class="fas fa-trash"></i> Delete</button>';
+                    $deleteBtn .= '</form>';
+                } else {
+                    // Product is soft-deleted, show restore button
+                    $deleteBtn = '<form action="' . route('product.restore', $product->id) . '" method="GET" class="delete-form">';
+                    $deleteBtn .= csrf_field();
+                    // $deleteBtn .= method_field('GET'); // Assuming you're using PATCH method for restore
+                    $deleteBtn .= '<button type="submit" class="btn details btn-success mt-1"><i class="fas fa-undo"></i> Restore</button>';
+                    $deleteBtn .= '</form>';
+                }
+                return $deleteBtn;
+            })
+            ->addColumn('images', function ($product) {
+                $images = '<div id="carouselExampleControls_' . $product->id . '" class="carousel slide" data-ride="carousel">';
+                            $images .= '<div class="carousel-inner">';
+                            $imagePaths = explode(',', $product->img_path);
+                            foreach ($imagePaths as $key => $imagePath) {
+                                $images .= '<div class="carousel-item' . ($key == 0 ? ' active' : '') . '">';
+                                $images .= '<img class="d-block w-100" src="' . asset($imagePath) . '" alt="Slide ' . ($key + 1) . '">';
+                                $images .= '</div>';
+                            }
+                            $images .= '</div>';
+                            $images .= '<a class="carousel-control-prev" href="#carouselExampleControls_' . $product->id . '" role="button" data-slide="prev">';
+                            $images .= '<span class="carousel-control-prev-icon" aria-hidden="true"></span>';
+                            $images .= '<span class="sr-only">Previous</span>';
+                            $images .= '</a>';
+                            $images .= '<a class="carousel-control-next" href="#carouselExampleControls_' . $product->id . '" role="button" data-slide="next">';
+                            $images .= '<span class="carousel-control-next-icon" aria-hidden="true"></span>';
+                            $images .= '<span class="sr-only">Next</span>';
+                            $images .= '</a>';
+                            $images .= '</div>';
+                            return $images;
+                        })
+                        ->rawColumns(['action', 'images'])
+                        ->setRowId('id');
     }
 
     /**

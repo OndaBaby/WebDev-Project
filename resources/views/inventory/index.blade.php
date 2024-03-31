@@ -1,4 +1,4 @@
-<!-- index.blade.php -->
+
 @extends('layouts.app')
 
 @section('content')
@@ -14,7 +14,6 @@
                             <tr>
                                 <th>Product</th>
                                 <th>Stock</th>
-                                <!-- Add more columns as needed -->
                                 <th>Action</th>
                             </tr>
                         </thead>

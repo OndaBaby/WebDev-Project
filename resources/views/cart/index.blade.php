@@ -157,15 +157,15 @@
                                     </td>
                                 </tr>
                                 @php
-                                    $cartTotal += $partialTotal; // Accumulate partial total to cart total
+                                    $cartTotal += $partialTotal;
                                 @endphp
                             @endforeach
                         </tbody>
                     </table>
                     <p>Total Cart Amount: {{ $cartTotal }}</p>
+                    {{-- <p>Total Cart Amount: {{ $cartTotal + $shippingFee}}</p> --}}
 
-                    <!-- Payment Method Dropdown -->
-                    <form action="{{ route('checkout') }}" method="POST">
+                    <form action="{{ route('checkout') }}" method="GET">
                         @csrf
                         <div class="form-group">
                             <label for="payment_method">Payment Method:</label>

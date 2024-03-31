@@ -10,6 +10,7 @@ use App\Models\Payement;
 use App\Mail\SendOrderStatus;
 use DB;
 use Mail;
+use Carbon\Carbon;
 
 class OrderController extends Controller
 {
@@ -20,79 +21,44 @@ class OrderController extends Controller
         return view('order.index', compact('orders'));
     }
 
-    public function edit($id)
-    {
-
-    }
-
-//     public function update(Request $request, $id)
-//     {
-//         // Update the order status
-//         $affectedRows = Order::where('id', $id)
-//             ->update(['status' => $request->status]);
-
-//         if ($affectedRows > 0) {
-//             $orderDetails = DB::table('customers as c')
-//                 ->join('orders as o', 'c.id', '=', 'o.customer_id')
-//                 ->join('orderlines as oi', 'o.id', '=', 'oi.order_id')
-//                 ->join('products as i', 'oi.product_id', '=', 'i.id')
-//                 ->where('o.id', $id)
-//                 ->select('c.user_id', 'i.description', 'oi.qty', 'i.img_path', 'i.cost')
-//                 ->get();
-
-//             // Fetch user details
-//             $user = DB::table('users as u')
-//                 ->join('customers as c', 'u.id', '=', 'c.user_id')
-//                 ->join('orders as o', 'o.customer_id', '=', 'c.id')
-//                 ->where('o.id', $id)
-//                 ->select('u.id', 'u.email')
-//                 ->first();
-
-//             // Send email notification
-//             Mail::to($user->email)
-//                 ->send(new SendOrderStatus($orderDetails));
-
-//             return redirect()->route('order.index')->with('success', 'Order updated');
-//         } else {
-//             return redirect()->route('order.index')->with('error', 'Failed to update order status');
-//         }
-//    }
-
     public function update(Request $request, $id)
     {
-        // Update the order status
-        $affectedRows = Order::where('id', $id)
-            ->update(['status' => $request->status]);
+        $order = Order::where('id', $id)
+            ->update(['status' => $request->status, 'date_shipped' => Carbon::now()->addDays(3)]);
 
-        if ($affectedRows > 0) {
-            // Retrieve order details including product information
-            $order = Order::with('customer.user', 'products')->find($id);
+        if ($order > 0) {
+            $myOrder = DB::table('customers as c')
+                ->join('orders as o', 'o.customer_id', '=', 'c.id')
+                ->join('orderlines as ol', 'o.id', '=', 'ol.order_id')
+                ->join('products as p', 'ol.product_id', '=', 'p.id')
+                ->where('o.id', $id)
+                ->select('c.user_id', 'p.name', 'ol.qty', 'p.img_path', 'p.cost', 'o.status')
+                ->get();
 
-            if ($order) {
-                // Prepare order details for email
-                $orderDetails = $order->products->map(function ($product) {
-                    return [
-                        'description' => $product->description, // Assuming product name is stored in 'name' column
-                        'qty' => $product->pivot->qty,
-                        'img_path' => $product->img_path,
-                        'cost' => $product->cost
-                    ];
-                });
+            // Calculate order total
+            $orderTotal = $myOrder->sum(function ($item) {
+                return $item->qty * $item->cost;
+            });
 
-                // Fetch user details
-                $user = $order->customer->user;
+            // Determine shipping fee based on order total
+            $shippingFee = $orderTotal >= 2000 ? 100 : 60;
 
-                // Send email notification
-                Mail::to($user->email)
-                    ->send(new SendOrderStatus($orderDetails));
+            // Add shipping fee to order total
+            $totalOrder = $orderTotal + $shippingFee;
 
-                return redirect()->route('order.index')->with('success', 'Order updated');
-            } else {
-                return redirect()->route('order.index')->with('error', 'Order not found');
-            }
-        } else {
-            return redirect()->route('order.index')->with('error', 'Failed to update order status');
+            $user =  DB::table('users as u')
+                ->join('customers as c', 'u.id', '=', 'c.user_id')
+                ->join('orders as o', 'o.customer_id', '=', 'c.id')
+                ->where('o.id', $id)
+                ->select('u.id', 'u.email')
+                ->first();
+
+            Mail::to($user->email)
+                ->send(new SendOrderStatus($myOrder, $shippingFee, $totalOrder));
+
+            return redirect()->route('order.index')->with('success', 'Order updated');
         }
-    }
 
+        return redirect()->route('order.index')->with('error', 'Email not sent');
+    }
 }

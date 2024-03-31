@@ -5,11 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Inventory;
-use App\DataTables\ProductDataTable;
 use View;
 use Storage;
 use Redirect;
-use Datatables;
+
 
 class ProductController extends Controller
 {
@@ -19,15 +18,10 @@ class ProductController extends Controller
         return view('welcome', compact('products'));
     }
 
-    public function producttable(ProductDataTable $dataTable)
-    {
-        return $dataTable->render('datatable.product');
-    }
-
     public function index()
     {
         $products = Product::withTrashed()->get();
-        return view('product.index', compact('products'));
+        return view('product.index', compact('product'));
     }
 
     public function create()
@@ -67,7 +61,7 @@ class ProductController extends Controller
         $inventory->stock = $request->stock;
         $inventory->save();
 
-        return redirect()->route('product.index')->with('success', 'Product created successfully.');
+        return redirect()->route('product')->with('success', 'Product created successfully.');
     }
 
     public function edit($id)
@@ -96,20 +90,20 @@ class ProductController extends Controller
 
         $product->save();
 
-        return redirect()->route('product.index')->with('success', 'Product updated successfully.');
+        return redirect()->route('product')->with('success', 'Product updated successfully.');
     }
 
     public function delete($id)
     {
         $product = Product::findOrFail($id);
         $product->delete();
-        return redirect()->route('product.index')->with('success', 'Product deleted successfully.');
+        return redirect()->route('product')->with('success', 'Product deleted successfully.');
     }
 
     public function restore($id)
     {
         $product = Product::withTrashed()->where('id', $id)->first();
         $product->restore();
-        return redirect()->route('product.index')->with('success', 'Product restored successfully.');
+        return redirect()->route('product')->with('success', 'Product restored successfully.');
     }
 }

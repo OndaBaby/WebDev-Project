@@ -41,6 +41,11 @@
     }
 </style>
 <div class="container">
+    @if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+    @endif
     <h1>Orders</h1>
     <table class="table table-striped">
         <thead>

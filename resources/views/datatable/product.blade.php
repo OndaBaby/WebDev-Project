@@ -1,5 +1,6 @@
 @extends('layouts.base')
 @section('content')
+{{-- @include('layouts.app') --}}
     <div class="container">
         <div class="card">
             <div class="card-header bg-orange text-black">Manage Products</div>

@@ -124,7 +124,7 @@ class ProductDataTable extends DataTable
                                 $imagePaths = explode(',', $product->img_path);
                                 foreach ($imagePaths as $key => $imagePath) {
                                     $images .= '<div class="carousel-item' . ($key == 0 ? ' active' : '') . '">';
-                                    $images .= '<img class="d-block w-100" src="' . asset($imagePath) . '" alt="Slide ' . ($key + 1) . '">';
+                                    $images .= '<img class="d-block w-100 " src="' . asset($imagePath) . '" alt="Slide ' . ($key + 1) . '" style="width: 40px; height: 150px;">';
                                     $images .= '</div>';
                                 }
                                 $images .= '</div>';
@@ -197,8 +197,6 @@ class ProductDataTable extends DataTable
                 ->orderable(false)
                 ->searchable(false)
                 ->width(200), // Adjust width as needed
-            Column::make('created_at'),
-            Column::make('updated_at'),
             Column::make('deleted_at'),
         ];
     }

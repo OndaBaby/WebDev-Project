@@ -77,8 +77,9 @@ Route::middleware(['auth','is_admin'])->group(function () {
 
     Route::get('/order', [OrderController::class, 'index'])->name('order.index');
     Route::post('/order/{id}/update', [OrderController::class, 'update'])->name('order.update');
+
     //Ok na to
-    Route::get('/product', [ProductController::class, 'index'])->name('product.index');
+    // Route::get('/product', [ProductController::class, 'index'])->name('product.index');
     Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
     Route::post('/product/store', [ProductController::class, 'store'])->name('product.store');
     Route::get('/product/{id}/edit', [ProductController::class, 'edit'])->name('product.edit');
@@ -91,13 +92,18 @@ Route::middleware(['auth','is_admin'])->group(function () {
     Route::get('/inventory/{productId}/edit', [InventoryController::class, 'edit'])->name('inventory.edit');
     Route::post('/inventory/{productId}/update', [InventoryController::class, 'update'])->name('inventory.update');
 
+    //feedback
+    Route::delete('/feedback/{id}/force-delete', [FeedbackController::class, 'forceDelete'])->name('feedback.force-delete');
+
     Route::get('/order/{id}/edit', [OrderController::class, 'edit'])->name('order.edit');
 
-    Route::get('/generate-analytics', [AdminController::class, 'generateInventoryChart'])->name('analytics');
-    Route::get('/product/datatable', [ProductController::class, 'producttable'])->name('product.datatable'); //di pa maayos | saka na to
-});
+    Route::get('/generate-analytics', [AdminController::class, 'index'])->name('analytics');
 
-Route::get('/product/datatable', [ProductController::class, 'producttable'])->name('product.datatable'); //di pa maayos | saka na to
+    Route::get('/product/datatable', [AdminController::class, 'producttable'])->name('product');
+    Route::get('/feedback/datatable', [AdminController::class, 'feedbackttable'])->name('feedback.datatable');
+    // Route::get('/product/datatable', [AdminController::class, 'producttable'])->name('product.datatable');
+    // Route::get('/product/datatable', [AdminController::class, 'producttable'])->name('product.datatable');
+});
 
 Auth::routes();
 

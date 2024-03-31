@@ -105,4 +105,16 @@ class FeedbackController extends Controller
         $feedback->delete();
         return redirect()->route('feedback.index')->with('success', 'Feedback deleted successfully.');
     }
+
+    public function forceDelete($id)
+    {
+        $record = Feedback::find($id);
+
+        if ($record) {
+            $record->forceDelete();
+            return redirect()->route('admin.feedback')->with('success', 'Record permanently deleted.');
+        } else {
+            return redirect()->route('admin.feedback')->with('error', 'Record not found.');
+        }
+    }
 }
