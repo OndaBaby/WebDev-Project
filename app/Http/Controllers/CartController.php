@@ -24,7 +24,7 @@ class CartController extends Controller
         if ($user) {
             $customerId = $user->customer->id;
             $cartProducts = Cart::where('customer_id', $customerId)->with('productC')->get();
-
+        
             $cartTotal = $cartProducts->sum(function ($cartProduct) {
                 return $cartProduct->productC->cost * $cartProduct->cart_qty;
             });
@@ -146,85 +146,79 @@ class CartController extends Controller
         }
     }
 
+    // public function index()
+    // {
+    //     $user = Auth::user();
+    //     if ($user) {
+    //         $customerId = $user->customer->id;
 
+    //         // Retrieve cart products for the authenticated user
+    //         $cartProducts = Cart::where('customer_id', $customerId)->with('productC')->get();
 
+    //         // Calculate the total cart amount
+    //         $cartTotal = $cartProducts->sum(function ($cartProduct) {
+    //             return $cartProduct->productC->cost * $cartProduct->cart_qty;
+    //         });
 
+    //         // Determine the shipping fee based on the cart total
+    //         $shippingFee = $cartTotal > 2000 ? 100 : 60;
 
+    //         // Pass the cart products, cart total, and shipping fee to the view
+    //         return view('cart.index', compact('cartProducts', 'cartTotal', 'shippingFee'));
+    //     } else {
+    //         return redirect()->route('login')->with('error', 'Please login to view your cart.');
+    //     }
+    // }
 
+    // public function checkout(Request $request)
+    // {
+    //     $user = Auth::user();
+    //     $customerId = $user->customer->id;
 
-    /* may condition sa shippingfeee
-    public function index()
-    {
-        $user = Auth::user();
-        if ($user) {
-            $customerId = $user->customer->id;
+    //     $shippingFee = 60;
+    //     try {
+    //         DB::beginTransaction();
+    //         $cartItems = Cart::where('customer_id', $customerId)->get();
 
-            // Retrieve cart products for the authenticated user
-            $cartProducts = Cart::where('customer_id', $customerId)->with('productC')->get();
+    //         $order = Order::create([
+    //             'customer_id' => $customerId,
+    //             'shipping_fee' => $shippingFee,
+    //             'status' => 'Pending',
+    //             'date_placed' => now(),
+    //         ]);
 
-            // Calculate the total cart amount
-            $cartTotal = $cartProducts->sum(function ($cartProduct) {
-                return $cartProduct->productC->cost * $cartProduct->cart_qty;
-            });
+    //         $orderLinesValues = '';
 
-            // Determine the shipping fee based on the cart total
-            $shippingFee = $cartTotal > 2000 ? 100 : 60;
+    //         foreach ($cartItems as $cartItem) {
+    //             $productId = $cartItem->product_id;
+    //             $quantity = $cartItem->cart_qty;
 
-            // Pass the cart products, cart total, and shipping fee to the view
-            return view('cart.index', compact('cartProducts', 'cartTotal', 'shippingFee'));
-        } else {
-            return redirect()->route('login')->with('error', 'Please login to view your cart.');
-        }
-    }
+    //             $orderLinesValues .= "($order->id, $productId, $quantity),";
 
-    public function checkout(Request $request)
-    {
-        $user = Auth::user();
-        $customerId = $user->customer->id;
+    //             // Update inventory
+    //             $inventory = Inventory::where('product_id', $productId)->firstOrFail();
+    //             $inventory->stock -= $quantity;
+    //             $inventory->save();
+    //         }
 
-        try {
-            DB::beginTransaction();
-            $cartItems = Cart::where('customer_id', $customerId)->get();
+    //         $orderLinesValues = rtrim($orderLinesValues, ',');
 
-            $order = Order::create([
-                'customer_id' => $customerId,
-                'shipping_fee' => $shippingFee,
-                'status' => 'Pending',
-                'date_placed' => now(),
-            ]);
+    //         if (!empty($orderLinesValues)) {
+    //             $sql = "INSERT INTO orderlines (order_id, product_id, qty) VALUES $orderLinesValues";
+    //             DB::statement($sql);
+    //         }
+    //         Payment::create([
+    //             'order_id' => $order->id,
+    //             'mode_of_payment' => $request->input('payment_method'),
+    //             'date_of_payment' => now(),
+    //         ]);
+    //         Cart::where('customer_id', $customerId)->delete();
 
-            $orderLinesValues = '';
-
-            foreach ($cartItems as $cartItem) {
-                $productId = $cartItem->product_id;
-                $quantity = $cartItem->cart_qty;
-
-                $orderLinesValues .= "($order->id, $productId, $quantity),";
-
-                // Update inventory
-                $inventory = Inventory::where('product_id', $productId)->firstOrFail();
-                $inventory->stock -= $quantity;
-                $inventory->save();
-            }
-
-            $orderLinesValues = rtrim($orderLinesValues, ',');
-
-            if (!empty($orderLinesValues)) {
-                $sql = "INSERT INTO orderlines (order_id, product_id, qty) VALUES $orderLinesValues";
-                DB::statement($sql);
-            }
-            Payment::create([
-                'order_id' => $order->id,
-                'mode_of_payment' => $request->input('payment_method'),
-                'date_of_payment' => now(),
-            ]);
-            Cart::where('customer_id', $customerId)->delete();
-
-            DB::commit();
-            return redirect()->route('cart.index')->with('success', 'Placed order successfully');
-        } catch (Exception $e) {
-            DB::rollback();
-            return redirect()->route('checkout')->with('error', 'Failed to complete the checkout.');
-        }
-    } */
+    //         DB::commit();
+    //         return redirect()->route('cart.index')->with('success', 'Placed order successfully');
+    //     } catch (Exception $e) {
+    //         DB::rollback();
+    //         return redirect()->route('checkout')->with('error', 'Failed to complete the checkout.');
+    //     }
+    // }
 }

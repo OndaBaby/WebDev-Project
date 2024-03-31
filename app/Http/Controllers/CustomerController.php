@@ -61,6 +61,27 @@ class CustomerController extends Controller
 
     public function myorder()
     {
+        // Get the currently logged-in user
+        $user = Auth::user();
 
+        // Check if the user is a customer and has orders
+        if ($user && $user->customer) {
+            // Fetch orders related to the customer
+            $orders = $user->customer->orders()->get();
+            return view('customer.order', compact('orders'));
+        } else {
+            return redirect()->back()->with('error', 'No orders found for the logged-in customer.');
+        }
+    }
+
+    public function cancelOrder(Order $order)
+    {
+        if ($order->status === 'pending') {
+            $order->status = 'cancelled';
+            $order->save();
+            return redirect()->back()->with('success', 'Order cancelled successfully.');
+        } else {
+            return redirect()->back()->with('error', 'Cannot cancel order. Status is not pending.');
+        }
     }
 }

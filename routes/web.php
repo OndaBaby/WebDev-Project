@@ -43,10 +43,10 @@ Route::get('/feedbacks/{id}', [FeedbackController::class, 'showFeedback'])->name
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/shop', [CustomerController::class, 'index'])->name('customer.index');
+    Route::get('/myorder', [CustomerController::class, 'myorder'])->name('myorder');
+    Route::delete('/orders/{order}', [CustomerController::class, 'cancelOrder'])->name('cancel.order');
 
     Route::get('/dashboard', [UserController::class, 'index'])->name('dashboard');
-
-    Route::get('/myorder', [CustomerController::class, 'myorder'])->name('myorder');
 
     Route::get('/customer/create', [CustomerController::class, 'create'])->name('customer.create');
     Route::post('/customer/store', [CustomerController::class, 'store'])->name('customer.store');

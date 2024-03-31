@@ -41,6 +41,12 @@
 
 @extends('layouts.app')
 @section('content')
+    <style>
+        body {
+        background-image: url('{{ asset('storage/images/orange.png') }}');
+        background-size: cover;
+    }
+    </style>
     <div class="container">
         <h1>Edit Inventory</h1>
         <div class="card">
