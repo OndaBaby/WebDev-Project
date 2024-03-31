@@ -9,6 +9,7 @@ use Storage;
 use App\Models\User;
 use App\Models\Customer;
 use App\Models\Image;
+use Illuminate\Support\Str;
 
 class ProfileController extends Controller
 {
@@ -60,7 +61,10 @@ class ProfileController extends Controller
         $customer->save();
     }
 
+    $user->setRememberToken(Str::random(60));
     $user->save();
+
+    Auth::setUser($user);
 
     return redirect()->back()->with('success', 'Profile updated successfully');
     }

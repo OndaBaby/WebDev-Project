@@ -68,7 +68,7 @@
                 <a href="{{ route('product') }}" class="nav-link">Products</a>
                 <a href="{{ route('order.index') }}" class="nav-link">Orders</a>
                 <a href="{{ route('analytics') }}" class="nav-link">Analytics</a>
-                <a href="{{ route('product') }}" class="nav-link">Feedbacks</a>
+                <a href="{{ route('feedback') }}" class="nav-link">Feedbacks</a>
                 <a href="{{ route('inventory') }}" class="nav-link">Inventory</a>
             <div class="dropdown">
                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

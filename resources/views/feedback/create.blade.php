@@ -62,7 +62,8 @@
                 <label for="img_path">Image: </label>
                 <input type="file" class="form-control-file" name="img_path[]" multiple required>
             </div>
-           <input type="hidden" name="product_id" value="{{ request()->query('product_id') }}">
+           {{-- <input type="hidden" name="product_id" value="{{ request()->query('product_id') }}"> --}}
+            <input type="hidden" name="product_id" value="{{ $product->id }}">
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>

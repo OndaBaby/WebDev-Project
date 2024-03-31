@@ -12,6 +12,7 @@ use App\Models\Inventory;
 use App\Models\User;
 use App\Models\Customer;
 use App\DataTables\ProductDataTable;
+use App\DataTables\FeedbackDataTable;
 use Datatables;
 use DB;
 
@@ -43,6 +44,10 @@ class AdminController extends Controller
         return $dataTable->render('datatable.product');
     }
 
+    public function feedbacktable(FeedbackDataTable $dataTable)
+    {
+        return $dataTable->render('datatable.feedback');
+    }
 
     public function customer()
     {

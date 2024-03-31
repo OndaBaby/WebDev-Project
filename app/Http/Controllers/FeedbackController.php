@@ -17,23 +17,23 @@ class FeedbackController extends Controller
         return view('feedback.show', compact('feedbacks', 'product'));
     }
 
-    public function index($product_id)
-    {
-        $user = Auth::user();
+    // public function index($product_id)
+    // {
+    //     $user = Auth::user();
 
-        $feedback = Feedback::where('customer_id', $user->customer->id)
-                            ->orderByDesc('created_at')
-                            ->get();
-        $sortedFeedback = Feedback::where('product_id', $product_id)
-                                    ->orderByDesc('created_at')
-                                    ->get();
-        return view('feedback.index', compact('feedback', 'sortedFeedback'));
-    }
+    //     $feedback = Feedback::where('customer_id', $user->customer->id)
+    //                         ->orderByDesc('created_at')
+    //                         ->get();
+    //     $sortedFeedback = Feedback::where('product_id', $product_id)
+    //                                 ->orderByDesc('created_at')
+    //                                 ->get();
+    //     return view('feedback.index', compact('feedback', 'sortedFeedback'));
+    // }
 
-    public function create(Request $request)
+    public function create(Request $request, $id)
     {
         $product_id = $request->query('product_id');
-        $product = Product::find($product_id);
+        $product = Product::find($id);
 
         return view('feedback.create', compact('product'));
     }

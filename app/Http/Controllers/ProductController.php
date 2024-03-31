@@ -87,9 +87,7 @@ class ProductController extends Controller
             }
             $product->img_path = implode(',', $newImagePaths);
         }
-
         $product->save();
-
         return redirect()->route('product')->with('success', 'Product updated successfully.');
     }
 

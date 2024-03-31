@@ -22,17 +22,16 @@ class FeedbackDataTable extends DataTable
     public function dataTable($query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('action', function ($product) {
-                if ($product->deleted_at === null) {
-                    // Product is not soft-deleted, show delete button
-                    $deleteBtn = '<form action="' . route('product.delete', $product->id) . '" method="POST" class="delete-form">';
+            ->addColumn('action', function ($feedback) {
+                if ($feedback->deleted_at === null) {
+                    $deleteBtn = '<form action="' . route('feedback.delete', $feedback->id) . '" method="POST" class="delete-form">';
                     $deleteBtn .= csrf_field();
                     $deleteBtn .= method_field('DELETE');
                     $deleteBtn .= '<button type="submit" class="btn details btn-danger mt-1"><i class="fas fa-trash"></i> Delete</button>';
                     $deleteBtn .= '</form>';
                 } else {
-                    // Product is soft-deleted, show restore button
-                    $deleteBtn = '<form action="' . route('product.restore', $product->id) . '" method="GET" class="delete-form">';
+                    // feedback is soft-deleted, show restore button
+                    $deleteBtn = '<form action="' . route('feedback.restore', $feedback->id) . '" method="GET" class="delete-form">';
                     $deleteBtn .= csrf_field();
                     // $deleteBtn .= method_field('GET'); // Assuming you're using PATCH method for restore
                     $deleteBtn .= '<button type="submit" class="btn details btn-success mt-1"><i class="fas fa-undo"></i> Restore</button>';
@@ -40,21 +39,21 @@ class FeedbackDataTable extends DataTable
                 }
                 return $deleteBtn;
             })
-            ->addColumn('images', function ($product) {
-                $images = '<div id="carouselExampleControls_' . $product->id . '" class="carousel slide" data-ride="carousel">';
+            ->addColumn('images', function ($feedback) {
+                $images = '<div id="carouselExampleControls_' . $feedback->id . '" class="carousel slide" data-ride="carousel">';
                             $images .= '<div class="carousel-inner">';
-                            $imagePaths = explode(',', $product->img_path);
+                            $imagePaths = explode(',', $feedback->img_path);
                             foreach ($imagePaths as $key => $imagePath) {
                                 $images .= '<div class="carousel-item' . ($key == 0 ? ' active' : '') . '">';
                                 $images .= '<img class="d-block w-100" src="' . asset($imagePath) . '" alt="Slide ' . ($key + 1) . '">';
                                 $images .= '</div>';
                             }
                             $images .= '</div>';
-                            $images .= '<a class="carousel-control-prev" href="#carouselExampleControls_' . $product->id . '" role="button" data-slide="prev">';
+                            $images .= '<a class="carousel-control-prev" href="#carouselExampleControls_' . $feedback->id . '" role="button" data-slide="prev">';
                             $images .= '<span class="carousel-control-prev-icon" aria-hidden="true"></span>';
                             $images .= '<span class="sr-only">Previous</span>';
                             $images .= '</a>';
-                            $images .= '<a class="carousel-control-next" href="#carouselExampleControls_' . $product->id . '" role="button" data-slide="next">';
+                            $images .= '<a class="carousel-control-next" href="#carouselExampleControls_' . $feedback->id . '" role="button" data-slide="next">';
                             $images .= '<span class="carousel-control-next-icon" aria-hidden="true"></span>';
                             $images .= '<span class="sr-only">Next</span>';
                             $images .= '</a>';
@@ -68,11 +67,10 @@ class FeedbackDataTable extends DataTable
     /**
      * Get the query source of dataTable.
      */
-    public function query(Feedback $model): QueryBuilder
+    public function query(): QueryBuilder
     {
-        return $model->newQuery();
+        return Feedback::query()->withTrashed()->orderBy('id', 'asc');
     }
-
     /**
      * Optional method if you want to use the html builder.
      */
@@ -82,17 +80,12 @@ class FeedbackDataTable extends DataTable
                     ->setTableId('feedback-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
-                    //->dom('Bfrtip')
+                    ->parameters([
+                        'dom'          => 'Bfrtip',
+                        'buttons'      => ['export', 'print', 'reset', 'reload'],
+                    ])
                     ->orderBy(1)
-                    ->selectStyleSingle()
-                    ->buttons([
-                        Button::make('excel'),
-                        Button::make('csv'),
-                        Button::make('pdf'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    ]);
+                    ->selectStyleSingle();
     }
 
     /**
@@ -102,16 +95,23 @@ class FeedbackDataTable extends DataTable
     {
         return [
             Column::computed('action')
-                  ->exportable(false)
-                  ->printable(false)
-                  ->width(60)
-                  ->addClass('text-center'),
+                ->exportable(false)
+                ->printable(false)
+                ->width(60)
+                ->addClass('text-center'),
             Column::make('id'),
-            Column::make('add your columns'),
-            Column::make('created_at'),
-            Column::make('updated_at'),
+            Column::make('customer_id'),
+            Column::make('feedback_id'),
+            Column::make('comments'),
+            Column::computed('images')
+                ->title('Images')
+                ->orderable(false)
+                ->searchable(false)
+                ->width(200), // Adjust width as needed
+            Column::make('deleted_at'),
         ];
     }
+
 
     /**
      * Get the filename for export.

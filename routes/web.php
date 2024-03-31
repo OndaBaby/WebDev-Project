@@ -13,6 +13,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\FaqController;
 
 
 /*
@@ -34,6 +35,8 @@ Route::get('/contact', function () {
     return view('contact.contact');
 })->name('contact');
 
+Route::get('/faqwel', [FaqController::class, 'index1'])->name('faqwel');
+
 Route::get('/search', [UserController::class, 'search'])->name('customer.search');
 
 Route::get('/', [ProductController::class, 'welcome'])->name('welcome');
@@ -52,7 +55,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/customer/store', [CustomerController::class, 'store'])->name('customer.store');
 
     Route::get('/feedback/create/{product_id}', [FeedbackController::class, 'create'])->name('feedback.create');
-    Route::get('//feedback/{product_id}', [FeedbackController::class, 'index'])->name('feedback');
+    // Route::get('//feedback/{product_id}', [FeedbackController::class, 'index'])->name('feedback');
     Route::post('/feedback/store', [FeedbackController::class, 'store'])->name('feedback.store');
     Route::get('/feedback/{id}/edit', [FeedbackController::class, 'edit'])->name('feedback.edit');
     Route::post('/feedback/{id}/update', [FeedbackController::class, 'update'])->name('feedback.update');
@@ -67,6 +70,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/mycart', [CartController::class, 'index'])->name('cart');
 
     Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
+
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 });
 
 Route::middleware(['auth','is_admin'])->group(function () {
@@ -100,9 +106,18 @@ Route::middleware(['auth','is_admin'])->group(function () {
     Route::get('/generate-analytics', [AdminController::class, 'index'])->name('analytics');
 
     Route::get('/product/datatable', [AdminController::class, 'producttable'])->name('product');
-    Route::get('/feedback/datatable', [AdminController::class, 'feedbackttable'])->name('feedback.datatable');
+    Route::get('/feedback/datatable', [AdminController::class, 'feedbacktable'])->name('feedback');
     // Route::get('/product/datatable', [AdminController::class, 'producttable'])->name('product.datatable');
     // Route::get('/product/datatable', [AdminController::class, 'producttable'])->name('product.datatable');
+
+    Route::get('/faqs', [FaqController::class, 'index'])->name('faqs.index');
+    Route::get('faqs/create', [FaqController::class, 'create'])->name('faqs.create');
+    Route::post('/faqs', [FaqController::class, 'store'])->name('faqs.store');
+    Route::get('/faqs/{faq}/edit', [FaqController::class, 'edit'])->name('faqs.edit');
+    Route::post('/faqs/{faq}', [FaqController::class, 'update'])->name('faqs.update');
+    Route::delete('/faqs/{faq}', [FaqController::class, 'destroy'])->name('faqs.destroy');
+    Route::post('/faqs/{id}/restore', [FaqController::class, 'restore'])->name('faqs.restore');
+
 });
 
 Auth::routes();
@@ -117,5 +132,5 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
     return redirect('/home');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
-Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+// Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+// Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
