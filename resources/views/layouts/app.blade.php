@@ -295,15 +295,13 @@
 </head>
 <body>
     <div id="app">
-        <!-- Header -->
     </head>
     <body>
         <div id="app">
             <!-- Header -->
             <header class="navbar">
-                <a href="{{ Auth::check() ? (Auth::user()->usertype === 'admin' ? route('admin.home') : route('home')) : route('welcome') }}" class="navbar-brand">
-                    <img src="{{ asset('storage/images/LogoE.png') }}" alt="ElectroKits Logo">
-                    ElectroKits
+                <a href="{{ Auth::check() ? (Auth::user()->usertype === 'admin' ? route('admin.home') : (Auth::user()->usertype === 'user' ? route('home') : route('welcome'))) : route('welcome') }}" class="navbar-brand">
+                    <img src="{{ asset('storage/images/LogoE.png') }}" alt="ElectroKits Logo">ElektroKits
                 </a>
                 <div class="nav-links">
                     @guest
@@ -320,7 +318,16 @@
                             <a href="{{ route('product.index') }}" class="nav-link">Feedbacks</a>
                             <a href="{{ route('inventory') }}" class="nav-link">Inventory</a>
                         @else
-                            <a href="{{ route('cart') }}" class="nav-link"><i class="fas fa-shopping-cart"></i>Cart</a>
+                            {{-- <a href="{{ route('cart') }}" class="nav-link"><i class="fas fa-shopping-cart"></i>Cart</a> --}}
+                            <a href="{{ route('cart') }}" class="nav-link">
+                                <i class="fas fa-shopping-cart"></i> Cart
+                                @php
+                                    $cartItemCount = \App\Models\Cart::where('customer_id', Auth::id())->count();
+                                @endphp
+                                @if ($cartItemCount > 0)
+                                    <span class="badge badge-pill badge-primary">{{ $cartItemCount }}</span>
+                                @endif
+                            </a>
                             <a href="{{ route('myorder') }}" class="nav-link"class="nav-link"><i class="fas fa-bag"></i>My Order</a>
                         @endif
                         <div class="dropdown">
@@ -351,3 +358,4 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
 </html>
+

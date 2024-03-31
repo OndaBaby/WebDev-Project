@@ -14,10 +14,17 @@ class Cart extends Model
     protected $fillable = ['customer_id', 'product_id','cart_qty'];
 
     public function customerC() {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
 
     public function productC() {
         return $this->belongsTo(Product::class, 'product_id');
+    }
+
+    public static function deleteByKeys($customerId, $productId)
+    {
+        self::where('customer_id', $customerId)
+            ->where('product_id', $productId)
+            ->delete();
     }
 }

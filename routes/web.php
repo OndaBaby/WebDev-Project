@@ -51,16 +51,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/customer/create', [CustomerController::class, 'create'])->name('customer.create');
     Route::post('/customer/store', [CustomerController::class, 'store'])->name('customer.store');
 
+    Route::get('/feedback/create/{product_id}', [FeedbackController::class, 'create'])->name('feedback.create');
     Route::get('//feedback/{product_id}', [FeedbackController::class, 'index'])->name('feedback');
-    Route::get('/feedback/create', [FeedbackController::class, 'create'])->name('feedback.create');
     Route::post('/feedback/store', [FeedbackController::class, 'store'])->name('feedback.store');
     Route::get('/feedback/{id}/edit', [FeedbackController::class, 'edit'])->name('feedback.edit');
     Route::post('/feedback/{id}/update', [FeedbackController::class, 'update'])->name('feedback.update');
     Route::delete('/feedback/{id}/delete', [FeedbackController::class, 'delete'])->name('feedback.delete');
 
     Route::get('/add-to-cart/{product_id}', [CartController::class, 'addToCart'])->name('cart.add');
-    Route::post('/update-cart', [CartController::class, 'updateCart'])->name('update.cart');
-    //Route::get('/add-to-cart', [CartController::class, 'addToCart'])->name('cart.add');
+    Route::get('/reduce-by-one/{productId}', [CartController::class, 'reduceByOne'])->name('reduceByOne');
+    Route::get('/add-by-one/{productId}', [CartController::class, 'addByOne'])->name('addByOne');
+    Route::get('/delete/{productId}', [CartController::class, 'delete'])->name('cart.delete');
 
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::get('/mycart', [CartController::class, 'index'])->name('cart');
@@ -95,6 +96,8 @@ Route::middleware(['auth','is_admin'])->group(function () {
     Route::get('/generate-analytics', [AdminController::class, 'generateInventoryChart'])->name('analytics');
     Route::get('/product/datatable', [ProductController::class, 'producttable'])->name('product.datatable'); //di pa maayos | saka na to
 });
+
+Route::get('/product/datatable', [ProductController::class, 'producttable'])->name('product.datatable'); //di pa maayos | saka na to
 
 Auth::routes();
 

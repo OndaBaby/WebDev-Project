@@ -37,8 +37,6 @@
 
     <link rel="stylesheet" href="{{ url('/css/app.css') }}">
     @yield('styles')
-</head>
-
 <body>
     <main class="py-4">
         @yield('content')

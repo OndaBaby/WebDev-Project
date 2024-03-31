@@ -14,35 +14,8 @@ class FeedbackController extends Controller
     {
         $product = Product::findOrFail($id);
         $feedbacks = $product->feedbacks()->orderByDesc('created_at')->get();
-
-        // dd($feedbacks);
-
         return view('feedback.show', compact('feedbacks', 'product'));
     }
-
-
-    // public function index()
-    // {
-    //     $user = Auth::user();
-
-    //     $feedback = Feedback::where('customer_id', $user->customer->id)
-    //                         ->orderByDesc('created_at')
-    //                         ->get();
-
-    //     $allFeedback = Feedback::orderByDesc('created_at')->get();
-
-    //     // Prioritize feedback of the currently logged-in customer
-    //     $priorityFeedback = $allFeedback->filter(function ($item) use ($user) {
-    //         return $item->customer_id == $user->customer->id;
-    //     });
-
-    //     $otherFeedback = $allFeedback->diff($priorityFeedback);
-
-    //     // Merge the prioritized feedback with the rest
-    //     $sortedFeedback = $priorityFeedback->merge($otherFeedback);
-
-    //     return view('feedback.index', compact('feedback', 'sortedFeedback'));
-    // }
 
     public function index($product_id)
     {
@@ -51,22 +24,18 @@ class FeedbackController extends Controller
         $feedback = Feedback::where('customer_id', $user->customer->id)
                             ->orderByDesc('created_at')
                             ->get();
-
-        // Filter feedback based on the product_id
         $sortedFeedback = Feedback::where('product_id', $product_id)
                                     ->orderByDesc('created_at')
                                     ->get();
-
         return view('feedback.index', compact('feedback', 'sortedFeedback'));
     }
 
     public function create(Request $request)
     {
-        $products = Product::all();
         $product_id = $request->query('product_id');
         $product = Product::find($product_id);
 
-        return view('feedback.create', compact('product', 'products'));
+        return view('feedback.create', compact('product'));
     }
 
     public function store(Request $request)
@@ -91,42 +60,30 @@ class FeedbackController extends Controller
             $feedback->img_path = implode(',', $img_paths);
         }
         $feedback->save();
-        return redirect()->route('feedback')->with('success', 'Feedback created successfully.');
+        return redirect()->route('feedback', ['product_id' => $request->product_id])->with('success', 'Feedback created successfully.');
     }
 
     public function edit($id)
     {
-        // Find the feedback by its ID
         $feedback = Feedback::findOrFail($id);
-
-        // Check if the logged-in user owns this feedback
         if ($feedback->customer_id != Auth::user()->customer->id) {
             abort(403, 'Unauthorized action.');
         }
-
         return view('feedback.edit', compact('feedback'));
     }
 
     public function update(Request $request, $id)
     {
-        // Find the feedback by its ID
         $feedback = Feedback::findOrFail($id);
-
-        // Check if the logged-in user owns this feedback
         if ($feedback->customer_id != Auth::user()->customer->id) {
             abort(403, 'Unauthorized action.');
         }
-
-        // Validate the request data
         $request->validate([
             'comments' => 'required|string',
             'img_path.*' => 'image|mimes:jpg,bmp,png|max:4080', // Adjust validation rules for images
         ]);
 
-        // Update the feedback's comments
         $feedback->comments = $request->comments;
-
-        // Handle image update
         if ($request->hasFile('img_path')) {
             $img_paths = [];
             foreach ($request->file('img_path') as $image) {
@@ -136,7 +93,7 @@ class FeedbackController extends Controller
             $feedback->img_path = implode(',', $img_paths);
         }
         $feedback->save();
-        return redirect()->route('review.index')->with('success', 'Feedback updated successfully.');
+        return redirect()->route('feedback.index')->with('success', 'Feedback updated successfully.');
     }
 
     public function delete($id)
@@ -146,6 +103,6 @@ class FeedbackController extends Controller
             abort(403, 'Unauthorized action.');
         }
         $feedback->delete();
-        return redirect()->route('review.index')->with('success', 'Feedback deleted successfully.');
+        return redirect()->route('feedback.index')->with('success', 'Feedback deleted successfully.');
     }
 }

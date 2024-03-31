@@ -9,6 +9,7 @@ use App\DataTables\ProductDataTable;
 use View;
 use Storage;
 use Redirect;
+use Datatables;
 
 class ProductController extends Controller
 {

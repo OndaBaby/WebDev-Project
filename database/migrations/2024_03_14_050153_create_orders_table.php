@@ -18,7 +18,7 @@ return new class extends Migration
             $table->float('shipping_fee');
             $table->string('status');
             $table->date('date_placed');
-            $table->date('date_shipped');
+            $table->date('date_shipped')->nullable();
             $table->timestamps();
         });
     }

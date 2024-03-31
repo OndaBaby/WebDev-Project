@@ -1,50 +1,15 @@
-@extends('layouts.app')
-
-@section('content')
-    @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-    @endif
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h1>Cart</h1>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Product Name</th>
-                                <th>Type</th>
-                                <th>Cost</th>
-                                <th>Quantity</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($cartProducts as $cartProduct)
-                                <tr>
-                                    <td>{{ $cartProduct->productC->name }}</td>
-                                    <td>{{ $cartProduct->productC->type }}</td>
-                                    <td>{{ $cartProduct->productC->cost }}</td>
-                                    <td>{{ $cartProduct->cart_qty }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    <a href="{{ route('checkout') }}" class="btn btn-primary">Checkout</a>
-            </div>
-        </div>
-    </div>
-@endsection
-
 {{-- @extends('layouts.app')
-
 @section('content')
+
     <div class="container">
+        @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+        @endif
         <div class="row">
             <div class="col-md-12">
                 <h1>Cart</h1>
-                <form action="{{ route('update.cart') }}" method="post">
-                    @csrf
                     <table class="table">
                         <thead>
                             <tr>
@@ -61,88 +26,158 @@
                                     <td>{{ $cartProduct->productC->name }}</td>
                                     <td>{{ $cartProduct->productC->type }}</td>
                                     <td>{{ $cartProduct->productC->cost }}</td>
+                                    <td>{{ $cartProduct->cart_qty }}</td>
                                     <td>
-                                        <div class="input-group">
-                                            <button class="btn btn-outline-secondary minus-btn" type="button" data-cart-id="{{ $cartProduct->id }}">-</button>
-                                            <input type="number" class="form-control quantity-input" name="quantity[{{ $cartProduct->id }}]" value="{{ $cartProduct->cart_qty }}" readonly>
-                                            <button class="btn btn-outline-secondary plus-btn" type="button" data-cart-id="{{ $cartProduct->id }}">+</button>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-danger delete-btn" type="button" data-cart-id="{{ $cartProduct->id }}">Delete</button>
+                                        <a href="{{ route('reduceByOne', $cartProduct->productC->id) }}" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-minus"></i>
+                                        </a>
+                                        <a href="{{ route('addByOne', $cartProduct->productC->id) }}" class="btn btn-success btn-sm">
+                                            <i class="fas fa-plus"></i>
+                                        </a>
+                                        <a href="{{ route('cart.delete', $cartProduct->productC->id) }}" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                     <a href="{{ route('checkout') }}" class="btn btn-primary">Checkout</a>
-                </form>
             </div>
         </div>
     </div>
 @endsection --}}
 
-{{-- @section('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Function to handle incrementing quantity
-        document.querySelectorAll('.plus-btn').forEach(function(button) {
-            button.addEventListener('click', function() {
-                var cartId = this.dataset.cartId;
-                var quantityInput = document.querySelector('input[name="quantity[' + cartId + ']"]');
-                var currentQuantity = parseInt(quantityInput.value);
-                quantityInput.value = currentQuantity + 1; // Increment quantity in UI
-                // Automatically update the cart quantity in the database
-                updateCartQuantity(cartId, quantityInput.value);
-            });
-        });
 
-        // Function to handle decrementing quantity
-        document.querySelectorAll('.minus-btn').forEach(function(button) {
-            button.addEventListener('click', function() {
-                var cartId = this.dataset.cartId;
-                var quantityInput = document.querySelector('input[name="quantity[' + cartId + ']"]');
-                var currentQuantity = parseInt(quantityInput.value);
-                if (currentQuantity > 1) {
-                    quantityInput.value = currentQuantity - 1; // Decrement quantity in UI
-                    // Automatically update the cart quantity in the database
-                    updateCartQuantity(cartId, quantityInput.value);
-                }
-            });
-        });
 
-        // Function to update cart quantity in the database
-        function updateCartQuantity(cartId, quantity) {
-            var formData = new FormData();
-            formData.append('cart_id', cartId);
-            formData.append('quantity', quantity);
-            // Send the request to update the cart quantity
-            fetch("{{ route('update.cart') }}", {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    console.log('Cart quantity updated successfully');
-                } else {
-                    console.error('Failed to update cart quantity');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
+{{-- @extends('layouts.app')  eto yung gumagana 03/31/2024
+@section('content')
 
-        // Function to handle deleting a cart item
-        document.querySelectorAll('.delete-btn').forEach(function(button) {
-            button.addEventListener('click', function() {
-                var cartId = this.dataset.cartId;
-                // Perform deletion action if needed
-            });
-        });
-    });
-</script>
+    <div class="container">
+        @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+        @endif
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Cart</h1>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Type</th>
+                                <th>Cost</th>
+                                <th>Quantity</th>
+                                <th>Partial Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $cartTotal = 0; // Initialize cart total
+                            @endphp
+                            @foreach($cartProducts as $cartProduct)
+                                <tr>
+                                    <td>{{ $cartProduct->productC->name }}</td>
+                                    <td>{{ $cartProduct->productC->type }}</td>
+                                    <td>{{ $cartProduct->productC->cost }}</td>
+                                    <td>{{ $cartProduct->cart_qty }}</td>
+                                    <td>{{ $partialTotal = $cartProduct->productC->cost * $cartProduct->cart_qty }}</td>
+                                    <td>
+                                        <a href="{{ route('reduceByOne', $cartProduct->productC->id) }}" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-minus"></i>
+                                        </a>
+                                        <a href="{{ route('addByOne', $cartProduct->productC->id) }}" class="btn btn-success btn-sm">
+                                            <i class="fas fa-plus"></i>
+                                        </a>
+                                        <a href="{{ route('cart.delete', $cartProduct->productC->id) }}" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                @php
+                                    $cartTotal += $partialTotal; // Accumulate partial total to cart total
+                                @endphp
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <p>Total Cart Amount: {{ $cartTotal }}</p>
+                    <a href="{{ route('checkout') }}" class="btn btn-primary">Checkout</a>
+            </div>
+        </div>
+    </div>
 @endsection --}}
+
+
+@extends('layouts.app')
+@section('content')
+
+    <div class="container">
+        @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+        @endif
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Cart</h1>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Type</th>
+                                <th>Cost</th>
+                                <th>Quantity</th>
+                                <th>Partial Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $cartTotal = 0; // Initialize cart total
+                            @endphp
+                            @foreach($cartProducts as $cartProduct)
+                                <tr>
+                                    <td>{{ $cartProduct->productC->name }}</td>
+                                    <td>{{ $cartProduct->productC->type }}</td>
+                                    <td>{{ $cartProduct->productC->cost }}</td>
+                                    <td>{{ $cartProduct->cart_qty }}</td>
+                                    <td>{{ $partialTotal = $cartProduct->productC->cost * $cartProduct->cart_qty }}</td>
+                                    <td>
+                                        <a href="{{ route('reduceByOne', $cartProduct->productC->id) }}" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-minus"></i>
+                                        </a>
+                                        <a href="{{ route('addByOne', $cartProduct->productC->id) }}" class="btn btn-success btn-sm">
+                                            <i class="fas fa-plus"></i>
+                                        </a>
+                                        <a href="{{ route('cart.delete', $cartProduct->productC->id) }}" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                @php
+                                    $cartTotal += $partialTotal; // Accumulate partial total to cart total
+                                @endphp
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <p>Total Cart Amount: {{ $cartTotal }}</p>
+
+                    <!-- Payment Method Dropdown -->
+                    <form action="{{ route('checkout') }}" method="POST">
+                        @csrf
+                        <div class="form-group">
+                            <label for="payment_method">Payment Method:</label>
+                            <select name="payment_method" id="payment_method" class="form-control">
+                                <option value="COD">Cash on Delivery</option>
+                                <option value="E-Wallet">E-Wallet</option>
+                                <option value="Online Banking">Online Banking</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Checkout</button>
+                    </form>
+            </div>
+        </div>
+    </div>
+@endsection

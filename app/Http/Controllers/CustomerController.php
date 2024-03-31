@@ -9,14 +9,31 @@ use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
 {
+    // public function index()
+    // {
+    //     $user = Auth::user();
+    //     $orderedProductIds = collect();
+    //     if ($user && $user->customer) {
+    //         $orderedProductIds = $user->customer->orders()->with('products')->get()->pluck('products.*.id')->flatten();
+    //     }
+    //     $products = Product::all();
+    //     return view('customer.index', compact('orderedProductIds', 'products', 'user'));
+    // }
+
     public function index()
     {
         $user = Auth::user();
         $orderedProductIds = collect();
+
         if ($user && $user->customer) {
+            // Fetch ordered product IDs for the current user
             $orderedProductIds = $user->customer->orders()->with('products')->get()->pluck('products.*.id')->flatten();
         }
+
+        // Fetch all products
         $products = Product::all();
+
+        // Pass the data to the view
         return view('customer.index', compact('orderedProductIds', 'products', 'user'));
     }
 

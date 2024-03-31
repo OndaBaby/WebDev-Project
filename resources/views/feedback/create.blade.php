@@ -21,7 +21,6 @@
 @endsection --}}
 
 @extends('layouts.app')
-
 @section('content')
 <div class="container mt-4">
     <h1>Create Feedback</h1>
@@ -63,24 +62,11 @@
                 <label for="img_path">Image: </label>
                 <input type="file" class="form-control-file" name="img_path[]" multiple required>
             </div>
-            <input type="hidden" name="product_id" value="{{ $product->id }}">
+           <input type="hidden" name="product_id" value="{{ request()->query('product_id') }}">
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
 </div>
-{{-- <form action="{{ route('feedback.store')}}" method="POST" enctype="multipart/form-data">
-    @csrf
-    <div class="form-group">
-        <label for="comment">Comment: </label>
-        <input type="text" class="form-control" name="comments" required>
-    </div>
-    <div class="form-group">
-        <label for="img_path">Image: </label>
-        <input type="file" class="form-control-file" name="img_path[]" multiple required>
-    </div>
-    <input type="hidden" name="product_id" value="{{ request()->query('product_id') }}">
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form> --}}
 <style>
     .product-container {
         width: 100%; /* Set the desired width */
@@ -165,7 +151,7 @@
         border: none;
         border-radius: 5px;
         padding: 10px 20px;
-        transition: background-color 0.3s;
+        /* transition: background-color 0.3s; */
     }
 
     .btn-orange:hover {

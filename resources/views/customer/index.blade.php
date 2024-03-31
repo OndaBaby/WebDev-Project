@@ -4,7 +4,7 @@
     <div class="max-w-7xl mx-auto p-6 lg:p-8">
         <div class="mt-16">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white rounded-lg shadow-md p-6">
+                <div class=" rounded-lg shadow-md p-6">
                     <div class="container">
                         @if(session('success'))
                             <div class="alert alert-success">
@@ -13,7 +13,7 @@
                         @endif
                         <div class="row">
                             @foreach ($products as $product)
-                                <div class="col-md-3 mb-4">
+                                <div class="col-md-3 mb-4 mr-5">
                                     <div class="card shopee-card">
                                         <div class="card-body product-container">
                                             <div id="carousel{{ $product->id }}" class="carousel slide" data-ride="carousel">
@@ -33,7 +33,7 @@
                                                     <span class="sr-only">Next</span>
                                                 </a>
                                             </div>
-                                            <h5 class="card-title" style="font-family: 'Roboto', sans-serif;">{{ $product->name }}</h5>
+                                            <h5 class="card-title mt-2" style="font-family: 'Roboto', sans-serif;">{{ $product->name }}</h5>
                                             <p class="card-text" style="font-family: 'Roboto', sans-serif;">Type: {{ $product->type }}</p>
                                             <p class="card-text" style="font-family: 'Roboto', sans-serif;">Description: {{ $product->description }}</p>
                                             <p class="card-text" style="font-family: 'Roboto', sans-serif;">Cost: ₱{{ $product->cost }}</p>
@@ -42,7 +42,7 @@
                                             </a>
                                             <a href="{{ route('cart.add', $product->id) }}" class="btn btn-orange mt-3 mr-2 add-to-cart-btn" style="font-family: 'Roboto', sans-serif;">Add to Cart</a>
                                             @if ($orderedProductIds->contains($product->id))
-                                            <a href="{{ route('feedback.create', ['product_id' => $product->id]) }}" class="btn btn-primary mt-3 review-button" style="font-size: 14px;">Comment</a>
+                                            <a href="{{ route('feedback.create', ['product_id' => $product->id]) }}" class="btn btn-primary mt-2" style="font-size: 14px;">Comment</a>
                                             @endif
                                         </div>
                                     </div>
@@ -63,7 +63,7 @@
 
     .navbar {
         background-color: #f05026; /* Shopee orange */
-        color: #ffffff; /* White */
+        /* color: #ffffff; White */
         padding: 20px 20px;
         border-radius: 10px;
         box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
@@ -113,8 +113,9 @@
         width: 30px;
     }
     .shopee-card {
-        border: none;
-        border-radius: 10px;
+        width: 120%;
+        /* border: none; */
+        /* border-radius: 10px; */
         box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
     }
 
@@ -136,7 +137,7 @@
 
     .btn-orange {
         background-color: #f05026; /* Shopee orange */
-        color: #ffffff; /* White */
+        /* color: #ffffff; White */
         border: none;
         border-radius: 5px;
         padding: 10px 20px;
@@ -193,6 +194,11 @@
     .carousel-control-next-icon {
         width: 30px;
         height: 30px;
+    }
+
+    body {
+        background-image: url('{{ asset('storage/images/orange.png') }}');
+        background-size: cover;
     }
 </style>
 @endsection
