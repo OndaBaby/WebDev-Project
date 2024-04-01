@@ -134,7 +134,7 @@
     @endif
 @endsection --}}
 
-
+{{--
 @extends('layouts.app')
 @section('content')
 <style>
@@ -217,7 +217,7 @@
                             <td>{{ $order->date_shipped }}</td>
                         @endif
                         <td>
-                            @if ($order->status === 'Pending')
+                            @if ($order->status === 'Processing')
                                 <form action="{{ route('cancel.order', $order->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
@@ -225,8 +225,130 @@
                                 </form>
                             @elseif ($order->status === 'Shipped')
                                 Your order is shipped already!
+                            @elseif ($order->status == 'Cancelled')
+                            <a href="{{ route('cart.add', $product->id) }}" class="btn btn-orange mt-3 mr-2 add-to-cart-btn" style="font-family: 'Roboto', sans-serif;">Buy Again</a>
                             @else
-                                Order Completed | Delivered
+                                 Your order is delivered
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @else
+        <p>No orders found for the logged-in customer.</p>
+    @endif
+@endsection --}}
+
+@extends('layouts.app')
+@section('content')
+<style>
+    .carousel {
+        position: relative;
+        width: 120px; /* Adjust the width */
+        height: 130px; /* Adjust the height */
+        overflow: hidden;
+        margin: 0 auto;
+    }
+
+    .carousel-inner {
+        display: flex;
+        transition: transform 0.5s ease;
+    }
+
+    .carousel-item {
+        width: 120px; /* Adjust the width */
+        height: 120px; /* Adjust the height */
+        flex: 0 0 auto;
+    }
+
+    .carousel-control {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 20px;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        text-align: center;
+        line-height: 120px; /* Adjust the line height */
+        cursor: pointer;
+    }
+
+    .carousel-control.prev {
+        left: 0;
+    }
+
+    .carousel-control.next {
+        right: 0;
+    }
+    body {
+    background-image: url('{{ asset('storage/images/orange.png') }}');
+    background-size: cover;
+}
+/* Added styles for the "Buy Again" button */
+.add-to-cart-btn {
+    background-color: #ffa500; /* Orange background color */
+    color: white; /* White text color */
+    border: none; /* No border */
+    padding: 8px 20px; /* Padding */
+    font-size: 16px; /* Font size */
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+.add-to-cart-btn:hover {
+    background-color: #ff7f00; /* Darker orange on hover */
+}
+</style>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header">My Orders</div>
+
+<div class="container">
+    @if (count($orders) > 0)
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Order Placed</th>
+                    <th>Product Name</th>
+                    <th>Status</th>
+                    @if ($orders->first()->date_shipped !== null)
+                        <th>Date Shipped</th>
+                    @endif
+                    <th>Order Status</th>
+                    <th> Action </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($orders as $order)
+                    <tr>
+                        <td>{{ $order->date_placed }}</td>
+                        <td>
+                            <ul>
+                                @foreach($order->products as $product)
+                                    <li>{{ $product->name }}</li>
+                                @endforeach
+                            </ul>
+                        </td>
+                        <td>{{ $order->status }}</td>
+                        @if ($order->date_shipped !== null)
+                            <td>{{ $order->date_shipped }}</td>
+                        @endif
+                        <td>
+                            @if ($order->status === 'Processing')
+                                <form action="{{ route('cancel.order', $order->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">Cancel</button>
+                                </form>
+                            @elseif ($order->status === 'Shipped')
+                                Your order is shipped already!
+                            @elseif ($order->status === 'Cancelled')
+                                <a href="{{ route('cart.add', $product->id) }}" class="btn btn-orange mt-3 mr-2 add-to-cart-btn" style="font-family: 'Roboto', sans-serif;">Buy Again</a>
+                            @else
+                                Your order is delivered
                             @endif
                         </td>
                     </tr>

@@ -38,7 +38,9 @@ class OrderController extends Controller
             $orderTotal = $myOrder->sum(function ($item) {
                 return $item->qty * $item->cost;
             });
-            
+
+            $shippingFee = 60;
+
             $totalOrder = $orderTotal + $shippingFee;
 
             $user =  DB::table('users as u')

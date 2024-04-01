@@ -98,6 +98,10 @@ class CartController extends Controller
         $user = Auth::user();
         $customerId = $user->customer->id;
 
+        if (Cart::where('customer_id', $customerId)->count() === 0) {
+            return redirect()->route('cart.index')->with('error', 'Your cart is empty. Please add items before checkout.');
+        }
+
         $shippingFee = 60;
 
         try {
@@ -146,6 +150,60 @@ class CartController extends Controller
             return redirect()->route('checkout')->with('error', 'Failed to complete the checkout.');
         }
     }
+
+    // public function checkout(Request $request)
+    // {
+    //     $user = Auth::user();
+    //     $customerId = $user->customer->id;
+
+    //     $shippingFee = 60;
+
+    //     try {
+    //         DB::beginTransaction();
+
+    //         $cartItems = Cart::where('customer_id', $customerId)->get();
+
+    //         $order = Order::create([
+    //             'customer_id' => $customerId,
+    //             'shipping_fee' => $shippingFee,
+    //             'status' => 'Processing',
+    //             'date_placed' => now(),
+    //         ]);
+
+    //         $orderLinesValues = '';
+
+    //         foreach ($cartItems as $cartItem) {
+    //             $productId = $cartItem->product_id;
+    //             $quantity = $cartItem->cart_qty;
+
+    //             $orderLinesValues .= "($order->id, $productId, $quantity),";
+
+    //             $inventory = Inventory::where('product_id', $productId)->firstOrFail();
+    //             $inventory->stock -= $quantity;
+    //             $inventory->save();
+    //         }
+
+    //         $orderLinesValues = rtrim($orderLinesValues, ',');
+
+    //         if (!empty($orderLinesValues)) {
+    //             $sql = "INSERT INTO orderlines (order_id, product_id, qty) VALUES $orderLinesValues";
+    //             DB::statement($sql);
+    //         }
+
+    //         Payment::create([
+    //             'order_id' => $order->id,
+    //             'mode_of_payment' => $request->input('payment_method'),
+    //             'date_of_payment' => now(),
+    //         ]);
+    //         Cart::where('customer_id', $customerId)->delete();
+
+    //         DB::commit();
+    //         return redirect()->route('cart.index')->with('success', 'Placed order successfully');
+    //     } catch (Exception $e) {
+    //         DB::rollback();
+    //         return redirect()->route('checkout')->with('error', 'Failed to complete the checkout.');
+    //     }
+    // }
 
     // public function index()
     // {

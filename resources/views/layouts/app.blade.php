@@ -321,7 +321,7 @@
                             <a href="{{ route('faq') }}" class="nav-link">FAQs</a>
                         @else
                             {{-- <a href="{{ route('cart') }}" class="nav-link"><i class="fas fa-shopping-cart"></i>Cart</a> --}}
-                            <a href="{{ route('cart') }}" class="nav-link">
+                            <a href="{{ route('cart.index') }}" class="nav-link">
                                 <i class="fas fa-shopping-cart"></i> Cart
                                 @php
                                     $cartItemCount = \App\Models\Cart::where('customer_id', Auth::id())->count();
