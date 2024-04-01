@@ -307,7 +307,7 @@
                     @guest
                         <a href="{{ route('about') }}" class="nav-link"><i class="fas fa-question"></i>About Us</a>
                         <a href="{{ route('contact') }}" class="nav-link"><i class="fas fa-phone"></i>Contact Us</a>
-                        <a href="{{ route('faq') }}" class="nav-link"><i class="fas fa-fa-question"></i>FAQs</a>
+                        <a href="{{ route('faqwel') }}" class="nav-link"><i class="fas fa-fa-question"></i>FAQs</a>
                         <a href="{{ route('login') }}" class="nav-link">Log in</a>
                         <a href="{{ route('register') }}" class="nav-link">Register</a>
                     @else

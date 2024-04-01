@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Feedback;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class FeedbackController extends Controller
 {
@@ -17,7 +18,7 @@ class FeedbackController extends Controller
         return view('feedback.show', compact('feedbacks', 'product'));
     }
 
-    public function index($product_id)
+    public function showindex($product_id)
     {
         $user = Auth::user();
 

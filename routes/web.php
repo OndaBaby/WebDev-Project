@@ -36,6 +36,7 @@ Route::get('/about', function () {
 Route::get('/contact', function () {
     return view('contact.contact');
 })->name('contact');
+
 Route::get('/faqwel', [FaqController::class, 'index1'])->name('faqwel');
 Route::get('/search', [UserController::class, 'search'])->name('customer.search');
 Route::get('/', [ProductController::class, 'welcome'])->name('welcome');
@@ -46,15 +47,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/shop', [CustomerController::class, 'index'])->name('customer.index');
     Route::get('/myorder', [CustomerController::class, 'myorder'])->name('myorder');
     Route::delete('/orders/{order}', [CustomerController::class, 'cancelOrder'])->name('cancel.order');
-
     Route::get('/dashboard', [UserController::class, 'index'])->name('dashboard');
 
     Route::get('/customer/create', [CustomerController::class, 'create'])->name('customer.create');
     Route::post('/customer/store', [CustomerController::class, 'store'])->name('customer.store');
 
     Route::get('/feedback/create/{product_id}', [FeedbackController::class, 'create'])->name('feedback.create');
-
-    Route::get('//feedback/{product_id}', [FeedbackController::class, 'index'])->name('feedbacks.index');
+    Route::get('/feedback/{product_id}', [FeedbackController::class, 'showindex'])->name('feedbacks.index');
 
     Route::post('/feedback/store', [FeedbackController::class, 'store'])->name('feedback.store');
     Route::get('/feedback/{id}/edit', [FeedbackController::class, 'edit'])->name('feedback.edit');
@@ -65,9 +64,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/reduce-by-one/{productId}', [CartController::class, 'reduceByOne'])->name('reduceByOne');
     Route::get('/add-by-one/{productId}', [CartController::class, 'addByOne'])->name('addByOne');
     Route::get('/delete/{productId}', [CartController::class, 'delete'])->name('cart.delete');
-
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    Route::get('/mycart', [CartController::class, 'index'])->name('cart');
+    // Route::get('/mycart', [CartController::class, 'index'])->name('cart');
 
     Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
 
@@ -76,11 +74,8 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth','is_admin'])->group(function () {
-    // need for improvement
     Route::get('/adminhome', [HomeController::class, 'adminHome'])->name('admin.home');
-
     Route::get('/customers', [AdminController::class, 'customer'])->name('customer');
-
     Route::get('/feedback/datatable', [AdminController::class, 'feedbacktable'])->name('feedback');
 
     Route::get('/order', [OrderController::class, 'index'])->name('order.index');
@@ -102,16 +97,16 @@ Route::middleware(['auth','is_admin'])->group(function () {
     Route::post('/faqs/{faq}', [FaqController::class, 'update'])->name('faqs.update');
     Route::delete('/faqs/{faq}', [FaqController::class, 'destroy'])->name('faqs.destroy');
     Route::post('/faqs/{id}/restore', [FaqController::class, 'restore'])->name('faqs.restore');
+
     //Ok na to
     Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory');
     Route::get('/inventory/{productId}/edit', [InventoryController::class, 'edit'])->name('inventory.edit');
     Route::post('/inventory/{productId}/update', [InventoryController::class, 'update'])->name('inventory.update');
 
-    //feedback
+    // ok na
     Route::delete('/feedback/{id}/force-delete', [FeedbackController::class, 'forceDelete'])->name('feedback.force-delete');
     Route::get('/order/{id}/edit', [OrderController::class, 'edit'])->name('order.edit');
     Route::get('/generate-analytics', [AdminController::class, 'index'])->name('analytics');
-    // di pa nagana
 });
 
 Auth::routes();

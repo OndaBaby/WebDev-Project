@@ -78,9 +78,8 @@ class AdminController extends Controller
             'User vs Customer Count',
             'doughnut',
             [$userCount, $customerCount]
-        )->backgroundColor([$this->bgcolor[0], $this->bgcolor[1]]); // Assigning different colors
+        )->backgroundColor([$this->bgcolor[0], $this->bgcolor[1]]); 
 
-        // Set chart options for user vs customer
         $userCustomerChart->options([
             'responsive' => true,
             'legend' => ['display' => true],

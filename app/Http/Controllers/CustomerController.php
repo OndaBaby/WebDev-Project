@@ -9,17 +9,6 @@ use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
 {
-    // public function index()
-    // {
-    //     $user = Auth::user();
-    //     $orderedProductIds = collect();
-    //     if ($user && $user->customer) {
-    //         $orderedProductIds = $user->customer->orders()->with('products')->get()->pluck('products.*.id')->flatten();
-    //     }
-    //     $products = Product::all();
-    //     return view('customer.index', compact('orderedProductIds', 'products', 'user'));
-    // }
-
     public function index()
     {
         $user = Auth::user();
@@ -67,18 +56,47 @@ class CustomerController extends Controller
         // Check if the user is a customer and has orders
         if ($user && $user->customer) {
             // Fetch orders related to the customer
-            $orders = $user->customer->orders()->get();
+            $orders = $user->customer->orders()->with('products')->get();
+
+            // Loop through each order and load the product names
+            $orders->each(function ($order) {
+                $order->product_names = $order->products->pluck('name')->implode(', ');
+            });
+
             return view('customer.order', compact('orders'));
         } else {
             return redirect()->back()->with('error', 'No orders found for the logged-in customer.');
         }
     }
 
+    // public function cancelOrder(Order $order)
+    // {
+    //     if ($order->status === 'pending') {
+    //         $order->status = 'cancelled';
+    //         $order->save();
+    //         return redirect()->back()->with('success', 'Order cancelled successfully.');
+    //     } else {
+    //         return redirect()->back()->with('error', 'Cannot cancel order. Status is not pending.');
+    //     }
+    // }
+
     public function cancelOrder(Order $order)
     {
-        if ($order->status === 'pending') {
-            $order->status = 'cancelled';
+        if ($order->status === 'Processing') {
+            $products = $order->products;
+            foreach ($products as $product) {
+                $inventory = $product->inventory;
+
+                if ($inventory) {
+                    $inventory->stock += $order->pivot->quantity;
+                    $inventory->save();
+                }
+            }
+
+            // Update order status
+            $order->status = 'Cancelled';
             $order->save();
+
             return redirect()->back()->with('success', 'Order cancelled successfully.');
         } else {
             return redirect()->back()->with('error', 'Cannot cancel order. Status is not pending.');
