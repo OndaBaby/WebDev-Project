@@ -1,15 +1,15 @@
 @extends('layouts.base')
 @section('content')
-{{-- @include('layouts.app') --}}
     <div class="container">
         @if(session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
         </div>
-    @endif
+        @endif
         <div class="card">
-            <div class="card-header bg-orange text-black">Manage Feedback</div>
+            <div class="card-header bg-orange text-black">Manage FAQs</div>
             <div class="card-body">
+                <a class="btn btn-primary mb-3" href="{{ route('faqs.create') }}">Add FAQs</a>
                 <div class="table-responsive">
                     {{ $dataTable->table(['class' => 'table table-bordered table-striped']) }}
                 </div>

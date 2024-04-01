@@ -9,7 +9,6 @@ use View;
 use Storage;
 use Redirect;
 
-
 class ProductController extends Controller
 {
     public function welcome()

@@ -17,18 +17,18 @@ class FeedbackController extends Controller
         return view('feedback.show', compact('feedbacks', 'product'));
     }
 
-    // public function index($product_id)
-    // {
-    //     $user = Auth::user();
+    public function index($product_id)
+    {
+        $user = Auth::user();
 
-    //     $feedback = Feedback::where('customer_id', $user->customer->id)
-    //                         ->orderByDesc('created_at')
-    //                         ->get();
-    //     $sortedFeedback = Feedback::where('product_id', $product_id)
-    //                                 ->orderByDesc('created_at')
-    //                                 ->get();
-    //     return view('feedback.index', compact('feedback', 'sortedFeedback'));
-    // }
+        $feedback = Feedback::where('customer_id', $user->customer->id)
+                            ->orderByDesc('created_at')
+                            ->get();
+        $sortedFeedback = Feedback::where('product_id', $product_id)
+                                    ->orderByDesc('created_at')
+                                    ->get();
+        return view('feedback.index', compact('feedback', 'sortedFeedback'));
+    }
 
     public function create(Request $request, $id)
     {
@@ -60,7 +60,7 @@ class FeedbackController extends Controller
             $feedback->img_path = implode(',', $img_paths);
         }
         $feedback->save();
-        return redirect()->route('feedback', ['product_id' => $request->product_id])->with('success', 'Feedback created successfully.');
+        return redirect()->route('feedbacks.index', ['product_id' => $request->product_id])->with('success', 'Feedback created successfully.');
     }
 
     public function edit($id)
@@ -93,7 +93,7 @@ class FeedbackController extends Controller
             $feedback->img_path = implode(',', $img_paths);
         }
         $feedback->save();
-        return redirect()->route('feedback.index')->with('success', 'Feedback updated successfully.');
+        return redirect()->route('feedbacks.index')->with('success', 'Feedback updated successfully.');
     }
 
     public function delete($id)
@@ -103,7 +103,7 @@ class FeedbackController extends Controller
             abort(403, 'Unauthorized action.');
         }
         $feedback->delete();
-        return redirect()->route('feedback.index')->with('success', 'Feedback deleted successfully.');
+        return redirect()->route('feedback')->with('success', 'Feedback deleted successfully.');
     }
 
     public function forceDelete($id)
@@ -112,9 +112,9 @@ class FeedbackController extends Controller
 
         if ($record) {
             $record->forceDelete();
-            return redirect()->route('admin.feedback')->with('success', 'Record permanently deleted.');
+            return redirect()->route('feedback')->with('success', 'Record permanently deleted.');
         } else {
-            return redirect()->route('admin.feedback')->with('error', 'Record not found.');
+            return redirect()->route('feedback')->with('error', 'Record not found.');
         }
     }
 }

@@ -27,6 +27,8 @@ use App\Http\Controllers\FaqController;
 |
 */
 
+
+// nagana na
 Route::get('/about', function () {
     return view('contact.about');
 })->name('about');
@@ -34,14 +36,10 @@ Route::get('/about', function () {
 Route::get('/contact', function () {
     return view('contact.contact');
 })->name('contact');
-
 Route::get('/faqwel', [FaqController::class, 'index1'])->name('faqwel');
-
 Route::get('/search', [UserController::class, 'search'])->name('customer.search');
-
 Route::get('/', [ProductController::class, 'welcome'])->name('welcome');
-
-Route::get('/feedbacks/{id}', [FeedbackController::class, 'showFeedback'])->name('showFeedback');
+Route::get('/feedbacks/{id}/show', [FeedbackController::class, 'showFeedback'])->name('showFeedback');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
@@ -55,7 +53,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/customer/store', [CustomerController::class, 'store'])->name('customer.store');
 
     Route::get('/feedback/create/{product_id}', [FeedbackController::class, 'create'])->name('feedback.create');
-    // Route::get('//feedback/{product_id}', [FeedbackController::class, 'index'])->name('feedback');
+
+    Route::get('//feedback/{product_id}', [FeedbackController::class, 'index'])->name('feedbacks.index');
+
     Route::post('/feedback/store', [FeedbackController::class, 'store'])->name('feedback.store');
     Route::get('/feedback/{id}/edit', [FeedbackController::class, 'edit'])->name('feedback.edit');
     Route::post('/feedback/{id}/update', [FeedbackController::class, 'update'])->name('feedback.update');
@@ -81,18 +81,27 @@ Route::middleware(['auth','is_admin'])->group(function () {
 
     Route::get('/customers', [AdminController::class, 'customer'])->name('customer');
 
+    Route::get('/feedback/datatable', [AdminController::class, 'feedbacktable'])->name('feedback');
+
     Route::get('/order', [OrderController::class, 'index'])->name('order.index');
     Route::post('/order/{id}/update', [OrderController::class, 'update'])->name('order.update');
 
     //Ok na to
-    // Route::get('/product', [ProductController::class, 'index'])->name('product.index');
+    Route::get('/product/datatable', [AdminController::class, 'producttable'])->name('product');
     Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
     Route::post('/product/store', [ProductController::class, 'store'])->name('product.store');
     Route::get('/product/{id}/edit', [ProductController::class, 'edit'])->name('product.edit');
     Route::post('/product/{id}/update', [ProductController::class, 'update'])->name('product.update');
     Route::delete('/product/{id}/delete', [ProductController::class, 'delete'])->name('product.delete');
     Route::get('/product/{id}/restore', [ProductController::class, 'restore'])->name('product.restore');
-
+    //ok na to
+    Route::get('/faq/datatable', [AdminController::class, 'faqtable'])->name('faq');
+    Route::get('faqs/create', [FaqController::class, 'create'])->name('faqs.create');
+    Route::post('/faqs', [FaqController::class, 'store'])->name('faqs.store');
+    Route::get('/faqs/{faq}/edit', [FaqController::class, 'edit'])->name('faqs.edit');
+    Route::post('/faqs/{faq}', [FaqController::class, 'update'])->name('faqs.update');
+    Route::delete('/faqs/{faq}', [FaqController::class, 'destroy'])->name('faqs.destroy');
+    Route::post('/faqs/{id}/restore', [FaqController::class, 'restore'])->name('faqs.restore');
     //Ok na to
     Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory');
     Route::get('/inventory/{productId}/edit', [InventoryController::class, 'edit'])->name('inventory.edit');
@@ -100,24 +109,9 @@ Route::middleware(['auth','is_admin'])->group(function () {
 
     //feedback
     Route::delete('/feedback/{id}/force-delete', [FeedbackController::class, 'forceDelete'])->name('feedback.force-delete');
-
     Route::get('/order/{id}/edit', [OrderController::class, 'edit'])->name('order.edit');
-
     Route::get('/generate-analytics', [AdminController::class, 'index'])->name('analytics');
-
-    Route::get('/product/datatable', [AdminController::class, 'producttable'])->name('product');
-    Route::get('/feedback/datatable', [AdminController::class, 'feedbacktable'])->name('feedback');
-    // Route::get('/product/datatable', [AdminController::class, 'producttable'])->name('product.datatable');
-    // Route::get('/product/datatable', [AdminController::class, 'producttable'])->name('product.datatable');
-
-    Route::get('/faqs', [FaqController::class, 'index'])->name('faqs.index');
-    Route::get('faqs/create', [FaqController::class, 'create'])->name('faqs.create');
-    Route::post('/faqs', [FaqController::class, 'store'])->name('faqs.store');
-    Route::get('/faqs/{faq}/edit', [FaqController::class, 'edit'])->name('faqs.edit');
-    Route::post('/faqs/{faq}', [FaqController::class, 'update'])->name('faqs.update');
-    Route::delete('/faqs/{faq}', [FaqController::class, 'destroy'])->name('faqs.destroy');
-    Route::post('/faqs/{id}/restore', [FaqController::class, 'restore'])->name('faqs.restore');
-
+    // di pa nagana
 });
 
 Auth::routes();

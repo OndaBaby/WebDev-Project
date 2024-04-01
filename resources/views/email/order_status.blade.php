@@ -12,7 +12,7 @@
 @extends('layouts.master')
 @section('body')
     <div style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8f9fa; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-        <h2 style="text-align: center; font-size: 24px; margin-bottom: 20px; color: #343a40;">Order Status</h2>
+        <h2 style="text-align: center; font-size: 24px; margin-bottom: 20px; color: #343a40;">Order Shipped</h2>
         <div style="text-align: center; margin-bottom: 20px;">
             <img src="{{ asset('storage/images/LogoE.png') }}" alt="ElectroKits Logo" style="max-width: 150px;"><br>
         </div>

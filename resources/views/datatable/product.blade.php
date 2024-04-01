@@ -2,6 +2,11 @@
 @section('content')
 {{-- @include('layouts.app') --}}
     <div class="container">
+            @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
         <div class="card">
             <div class="card-header bg-orange text-black">Manage Products</div>
             <div class="card-body">

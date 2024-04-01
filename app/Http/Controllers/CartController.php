@@ -24,7 +24,7 @@ class CartController extends Controller
         if ($user) {
             $customerId = $user->customer->id;
             $cartProducts = Cart::where('customer_id', $customerId)->with('productC')->get();
-        
+
             $cartTotal = $cartProducts->sum(function ($cartProduct) {
                 return $cartProduct->productC->cost * $cartProduct->cart_qty;
             });
@@ -108,7 +108,7 @@ class CartController extends Controller
             $order = Order::create([
                 'customer_id' => $customerId,
                 'shipping_fee' => $shippingFee,
-                'status' => 'Pending',
+                'status' => 'Processing',
                 'date_placed' => now(),
             ]);
 
@@ -131,6 +131,7 @@ class CartController extends Controller
                 $sql = "INSERT INTO orderlines (order_id, product_id, qty) VALUES $orderLinesValues";
                 DB::statement($sql);
             }
+
             Payment::create([
                 'order_id' => $order->id,
                 'mode_of_payment' => $request->input('payment_method'),

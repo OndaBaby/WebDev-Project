@@ -16,7 +16,7 @@
                         <td>{{ $order->id }}</td>
                         <td>{{ $order->status }}</td>
                         <td>
-                            @if ($order->status === 'Pending')
+                            @if ($order->status === 'Processing')
                                 <form action="{{ route('cancel.order', $order->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')

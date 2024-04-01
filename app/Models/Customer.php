@@ -12,7 +12,7 @@ class Customer extends Model
 
     protected $fillable = ['user_id', 'address', 'contact_no'];
 
-    public function feedbackC() {
+    public function feedbacks() {
         return $this->hasMany(Feedback::class);
     }
 

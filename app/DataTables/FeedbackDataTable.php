@@ -3,6 +3,8 @@
 namespace App\DataTables;
 
 use App\Models\Feedback;
+use App\Models\Customer;
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
@@ -11,6 +13,9 @@ use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
+use Storage;
+use DB;
+use DataTables;
 
 class FeedbackDataTable extends DataTable
 {
@@ -19,49 +24,86 @@ class FeedbackDataTable extends DataTable
      *
      * @param QueryBuilder $query Results from query() method.
      */
+
+    //  public function dataTable($query): EloquentDataTable
+    //  {
+    //      return datatables()->eloquent($query)
+    //          ->addColumn('action', function ($feedback) {
+    //              if ($feedback->deleted_at === null) {
+    //                  $deleteBtn = '<form action="' . route('feedback.force-delete', $feedback->id) . '" method="POST" class="delete-form">';
+    //                  $deleteBtn .= csrf_field();
+    //                  $deleteBtn .= method_field('DELETE');
+    //                  $deleteBtn .= '<button type="submit" class="btn details btn-danger mt-1"><i class="fas fa-trash"></i> Delete</button>';
+    //                  $deleteBtn .= '</form>';
+    //              } else {
+    //                  // feedback is soft-deleted, show restore button
+    //                  $deleteBtn = '<form action="' . route('feedback.restore', $feedback->id) . '" method="GET" class="delete-form">';
+    //                  $deleteBtn .= csrf_field();
+    //                  // $deleteBtn .= method_field('GET'); // Assuming you're using PATCH method for restore
+    //                  $deleteBtn .= '<button type="submit" class="btn details btn-success mt-1"><i class="fas fa-undo"></i> Restore</button>';
+    //                  $deleteBtn .= '</form>';
+    //              }
+    //              return $deleteBtn;
+    //          })
+    //          ->addColumn('images', function ($feedback) {
+    //              $images = '<div id="carouselExampleControls_' . $feedback->id . '" class="carousel slide" data-ride="carousel">';
+    //                          $images .= '<div class="carousel-inner">';
+    //                          $imagePaths = explode(',', $feedback->img_path);
+    //                          foreach ($imagePaths as $key => $imagePath) {
+    //                              $images .= '<div class="carousel-item' . ($key == 0 ? ' active' : '') . '">';
+    //                              $images .= '<img class="d-block w-100" src="' . asset($imagePath) . '" alt="Slide ' . ($key + 1) . '">';
+    //                              $images .= '</div>';
+    //                          }
+    //                          $images .= '</div>';
+    //                          $images .= '<a class="carousel-control-prev" href="#carouselExampleControls_' . $feedback->id . '" role="button" data-slide="prev">';
+    //                          $images .= '<span class="carousel-control-prev-icon" aria-hidden="true"></span>';
+    //                          $images .= '<span class="sr-only">Previous</span>';
+    //                          $images .= '</a>';
+    //                          $images .= '<a class="carousel-control-next" href="#carouselExampleControls_' . $feedback->id . '" role="button" data-slide="next">';
+    //                          $images .= '<span class="carousel-control-next-icon" aria-hidden="true"></span>';
+    //                          $images .= '<span class="sr-only">Next</span>';
+    //                          $images .= '</a>';
+    //                          $images .= '</div>';
+    //                          return $images;
+    //                      })
+    //                      ->rawColumns(['action', 'images'])
+    //                      ->setRowId('id');
+    //  }
+
     public function dataTable($query): EloquentDataTable
     {
-        return (new EloquentDataTable($query))
+        return datatables()->eloquent($query)
             ->addColumn('action', function ($feedback) {
-                if ($feedback->deleted_at === null) {
-                    $deleteBtn = '<form action="' . route('feedback.delete', $feedback->id) . '" method="POST" class="delete-form">';
-                    $deleteBtn .= csrf_field();
-                    $deleteBtn .= method_field('DELETE');
-                    $deleteBtn .= '<button type="submit" class="btn details btn-danger mt-1"><i class="fas fa-trash"></i> Delete</button>';
-                    $deleteBtn .= '</form>';
-                } else {
-                    // feedback is soft-deleted, show restore button
-                    $deleteBtn = '<form action="' . route('feedback.restore', $feedback->id) . '" method="GET" class="delete-form">';
-                    $deleteBtn .= csrf_field();
-                    // $deleteBtn .= method_field('GET'); // Assuming you're using PATCH method for restore
-                    $deleteBtn .= '<button type="submit" class="btn details btn-success mt-1"><i class="fas fa-undo"></i> Restore</button>';
-                    $deleteBtn .= '</form>';
-                }
+                $deleteBtn = '<form action="' . route('feedback.force-delete', $feedback->id) . '" method="POST" class="delete-form">';
+                $deleteBtn .= csrf_field();
+                $deleteBtn .= method_field('DELETE');
+                $deleteBtn .= '<button type="submit" class="btn details btn-danger mt-1"><i class="fas fa-trash"></i> Delete</button>';
+                $deleteBtn .= '</form>';
                 return $deleteBtn;
             })
             ->addColumn('images', function ($feedback) {
                 $images = '<div id="carouselExampleControls_' . $feedback->id . '" class="carousel slide" data-ride="carousel">';
-                            $images .= '<div class="carousel-inner">';
-                            $imagePaths = explode(',', $feedback->img_path);
-                            foreach ($imagePaths as $key => $imagePath) {
-                                $images .= '<div class="carousel-item' . ($key == 0 ? ' active' : '') . '">';
-                                $images .= '<img class="d-block w-100" src="' . asset($imagePath) . '" alt="Slide ' . ($key + 1) . '">';
-                                $images .= '</div>';
-                            }
-                            $images .= '</div>';
-                            $images .= '<a class="carousel-control-prev" href="#carouselExampleControls_' . $feedback->id . '" role="button" data-slide="prev">';
-                            $images .= '<span class="carousel-control-prev-icon" aria-hidden="true"></span>';
-                            $images .= '<span class="sr-only">Previous</span>';
-                            $images .= '</a>';
-                            $images .= '<a class="carousel-control-next" href="#carouselExampleControls_' . $feedback->id . '" role="button" data-slide="next">';
-                            $images .= '<span class="carousel-control-next-icon" aria-hidden="true"></span>';
-                            $images .= '<span class="sr-only">Next</span>';
-                            $images .= '</a>';
-                            $images .= '</div>';
-                            return $images;
-                        })
-                        ->rawColumns(['action', 'images'])
-                        ->setRowId('id');
+                $images .= '<div class="carousel-inner">';
+                $imagePaths = explode(',', $feedback->img_path);
+                foreach ($imagePaths as $key => $imagePath) {
+                    $images .= '<div class="carousel-item' . ($key == 0 ? ' active' : '') . '">';
+                    $images .= '<img class="d-block w-100" src="' . asset($imagePath) . '" alt="Slide ' . ($key + 1) . '">';
+                    $images .= '</div>';
+                }
+                $images .= '</div>';
+                $images .= '<a class="carousel-control-prev" href="#carouselExampleControls_' . $feedback->id . '" role="button" data-slide="prev">';
+                $images .= '<span class="carousel-control-prev-icon" aria-hidden="true"></span>';
+                $images .= '<span class="sr-only">Previous</span>';
+                $images .= '</a>';
+                $images .= '<a class="carousel-control-next" href="#carouselExampleControls_' . $feedback->id . '" role="button" data-slide="next">';
+                $images .= '<span class="carousel-control-next-icon" aria-hidden="true"></span>';
+                $images .= '<span class="sr-only">Next</span>';
+                $images .= '</a>';
+                $images .= '</div>';
+                return $images;
+            })
+            ->rawColumns(['action', 'images'])
+            ->setRowId('id');
     }
 
     /**
@@ -69,8 +111,14 @@ class FeedbackDataTable extends DataTable
      */
     public function query(): QueryBuilder
     {
-        return Feedback::query()->withTrashed()->orderBy('id', 'asc');
+        $query = Feedback::query()
+            ->join('customers', 'customers.id', '=', 'feedback.customer_id')
+            ->join('products', 'products.id', '=', 'feedback.product_id')
+            ->select('feedback.*', 'customers.username', 'products.name');
+
+        return $query;
     }
+
     /**
      * Optional method if you want to use the html builder.
      */
@@ -100,17 +148,20 @@ class FeedbackDataTable extends DataTable
                 ->width(60)
                 ->addClass('text-center'),
             Column::make('id'),
-            Column::make('customer_id'),
-            Column::make('feedback_id'),
+            Column::make('username')
+                ->title('Customer'),
+            Column::make('name')
+                ->title('Product'),
             Column::make('comments'),
             Column::computed('images')
                 ->title('Images')
                 ->orderable(false)
                 ->searchable(false)
-                ->width(200), // Adjust width as needed
+                ->width(200),
             Column::make('deleted_at'),
         ];
     }
+
 
 
     /**

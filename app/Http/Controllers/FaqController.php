@@ -44,7 +44,7 @@ class FaqController extends Controller
 
         $faq->save();
 
-        return redirect()->route('faqs.index')->with('success', 'FAQ created successfully!');
+        return redirect()->route('faq')->with('success', 'FAQ created successfully!');
     }
 
     public function edit($id)
@@ -104,7 +104,7 @@ class FaqController extends Controller
                 }
         $faq->save();
 
-        return redirect()->route('faqs.index')->with('success', 'FAQ updated successfully!');
+        return redirect()->route('faq')->with('success', 'FAQ updated successfully!');
     }
 
 
@@ -113,7 +113,7 @@ class FaqController extends Controller
         $faq = Faq::withTrashed()->findOrFail($id);
         $faq->delete();
 
-        return redirect()->route('faqs.index')->with('success', 'FAQ deleted successfully!');
+        return redirect()->route('faq')->with('success', 'FAQ deleted successfully!');
     }
 
     public function restore($id)
@@ -121,7 +121,7 @@ class FaqController extends Controller
         $faq = Faq::withTrashed()->findOrFail($id);
         $faq->restore();
 
-        return redirect()->route('faqs.index')->with('success', 'FAQ restored successfully!');
+        return redirect()->route('faq')->with('success', 'FAQ restored successfully!');
     }
 
     public function index1()

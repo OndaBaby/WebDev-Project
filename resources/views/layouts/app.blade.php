@@ -307,6 +307,7 @@
                     @guest
                         <a href="{{ route('about') }}" class="nav-link"><i class="fas fa-question"></i>About Us</a>
                         <a href="{{ route('contact') }}" class="nav-link"><i class="fas fa-phone"></i>Contact Us</a>
+                        <a href="{{ route('faq') }}" class="nav-link"><i class="fas fa-fa-question"></i>FAQs</a>
                         <a href="{{ route('login') }}" class="nav-link">Log in</a>
                         <a href="{{ route('register') }}" class="nav-link">Register</a>
                     @else
@@ -317,7 +318,7 @@
                             <a href="{{ route('analytics') }}" class="nav-link">Analytics</a>
                             <a href="{{ route('feedback') }}" class="nav-link">Feedbacks</a>
                             <a href="{{ route('inventory') }}" class="nav-link">Inventory</a>
-                            <a href="{{ route('faqs.index') }}" class="nav-link">FAQs</a>
+                            <a href="{{ route('faq') }}" class="nav-link">FAQs</a>
                         @else
                             {{-- <a href="{{ route('cart') }}" class="nav-link"><i class="fas fa-shopping-cart"></i>Cart</a> --}}
                             <a href="{{ route('cart') }}" class="nav-link">

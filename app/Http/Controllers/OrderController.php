@@ -35,15 +35,10 @@ class OrderController extends Controller
                 ->select('c.user_id', 'p.name', 'ol.qty', 'p.img_path', 'p.cost', 'o.status')
                 ->get();
 
-            // Calculate order total
             $orderTotal = $myOrder->sum(function ($item) {
                 return $item->qty * $item->cost;
             });
-
-            // Determine shipping fee based on order total
-            $shippingFee = $orderTotal >= 2000 ? 100 : 60;
-
-            // Add shipping fee to order total
+            
             $totalOrder = $orderTotal + $shippingFee;
 
             $user =  DB::table('users as u')
