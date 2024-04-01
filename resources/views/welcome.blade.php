@@ -358,7 +358,7 @@
                 <a href="{{ route('login') }}" class="nav-link">Log in</a>
                 <a href="{{ route('register') }}" class="nav-link">Register</a>
             @else
-                <span class="user-name">{{ Auth::user()->name }}</span> <!-- Display user's name -->
+                <span class="user-name">{{ Auth::user()->name }}</span>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="logout-button shopee-theme">Logout</button>
@@ -377,7 +377,7 @@
                     </div>
                 </div>
             @endguest
-            <a href="{{ auth()->check() ? route('cart') : route('login') }}" class="cart-icon" style="font-size: 24px;">
+            <a href="{{ auth()->check() ? route('cart.index') : route('login') }}" class="cart-icon" style="font-size: 24px;">
                 <i class="fas fa-shopping-cart" style="color: white;"></i> <!-- Change the color to black -->
             </a>
         </div>

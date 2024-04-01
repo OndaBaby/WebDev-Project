@@ -318,6 +318,7 @@
                             <a href="{{ route('analytics') }}" class="nav-link">Analytics</a>
                             <a href="{{ route('feedback') }}" class="nav-link">Feedbacks</a>
                             <a href="{{ route('inventory') }}" class="nav-link">Inventory</a>
+                            <a href="{{ route('supplier') }}" class="nav-link">Suppliers</a>
                             <a href="{{ route('faq') }}" class="nav-link">FAQs</a>
                         @else
                             {{-- <a href="{{ route('cart') }}" class="nav-link"><i class="fas fa-shopping-cart"></i>Cart</a> --}}

@@ -16,6 +16,7 @@ use App\Models\Faq;
 use App\DataTables\ProductDataTable;
 use App\DataTables\FeedbackDataTable;
 use App\DataTables\FaqDataTable;
+use App\DataTables\SupplierDataTable;
 use Datatables;
 use DB;
 
@@ -57,6 +58,11 @@ class AdminController extends Controller
         return $dataTable->render('datatable.faq');
     }
 
+    public function suppliertable(SupplierDataTable $dataTable)
+    {
+        return $dataTable->render('datatable.supplier');
+    }
+
     public function customer()
     {
         $customers = Customer::whereHas('user', function ($query) {
@@ -78,7 +84,7 @@ class AdminController extends Controller
             'User vs Customer Count',
             'doughnut',
             [$userCount, $customerCount]
-        )->backgroundColor([$this->bgcolor[0], $this->bgcolor[1]]); 
+        )->backgroundColor([$this->bgcolor[0], $this->bgcolor[1]]);
 
         $userCustomerChart->options([
             'responsive' => true,

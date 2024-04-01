@@ -14,7 +14,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FaqController;
-
+use App\Http\Controllers\SupplierController;
 
 /*
 |--------------------------------------------------------------------------
@@ -102,6 +102,16 @@ Route::middleware(['auth','is_admin'])->group(function () {
     Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory');
     Route::get('/inventory/{productId}/edit', [InventoryController::class, 'edit'])->name('inventory.edit');
     Route::post('/inventory/{productId}/update', [InventoryController::class, 'update'])->name('inventory.update');
+
+    //ok na to
+    // Route::get('/supplier', [SupplierController::class, 'index'])->name('supplier');
+    Route::get('/supplier/datatable', [AdminController::class, 'suppliertable'])->name('supplier');
+    Route::get('/supplier/create', [SupplierController::class, 'create'])->name('supplier.create');
+    Route::post('/supplier/store', [SupplierController::class, 'store'])->name('supplier.store');
+    Route::get('/supplier/{id}/edit', [SupplierController::class, 'edit'])->name('supplier.edit');
+    Route::post('/supplier/{id}/update', [SupplierController::class, 'update'])->name('supplier.update');
+    Route::delete('/supplier/{id}/delete', [SupplierController::class, 'delete'])->name('supplier.delete');
+    Route::get('/supplier/{id}/restore', [SupplierController::class, 'restore'])->name('supplier.restore');
 
     // ok na
     Route::delete('/feedback/{id}/force-delete', [FeedbackController::class, 'forceDelete'])->name('feedback.force-delete');
